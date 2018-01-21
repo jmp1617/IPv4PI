@@ -28,14 +28,18 @@
 //
 //------------------------------
 struct packet_meta_s{
+    FILE* packet;
+    //flags
     unsigned ethernet_flag: 1; // whether or not ethernet header is present or stripped
     unsigned fcs_active: 1; // whether or not ethernet checksum included
     unsigned pre_del: 1; // whether or not the preamble and frame delimiter is present
-    unsigned 802_1_Q: 1; // if 802.1Q tag is present
+    unsigned llc: 1; // if 802.1Q tag is present
+    //counts
     unsigned int byte_count; // number of bytes in the packet
+    unsigned int payload_size;
 };
 
-typedef packet_meta_s* Packet_Meta;
+typedef struct packet_meta_s* Packet_Meta;
 
 //------------------------------
 //
@@ -66,7 +70,7 @@ struct ipv4_header_s{
     //-------------------------- 128
 };
 
-typedef ipv4_header_s* IPv4_Header;
+typedef struct ipv4_header_s* IPv4_Header;
 
 //------------------------------
 //
@@ -81,7 +85,7 @@ struct ethernet_header_s{
     //-------------------------- 48
     uint8_t* source;
     //-------------------------- 96
-    uint32_t 802_1_Q; // optional - specified in metadata
+    uint32_t llc; // optional - specified in metadata
     //-------------------------- 128
     uint16_t ethertype;
     //-------------------------- 144
@@ -89,8 +93,40 @@ struct ethernet_header_s{
     //-------------------------- 46 - 1500 octets
     uint32_t fcs;
     //-------------------------- +32
-}
+};
 
-typedef ethernet_header_s* Ethernet_Header;
+typedef struct ethernet_header_s* Ethernet_Header;
 
 //-----------------------------------------------------
+// Initialization - memory allocations
+//-----------------------------------------------------
+
+Packet_Meta create_packet_meta();
+IPv4_Header create_ip_header();
+Ethernet_Header create_eII_header();
+
+//-----------------------------------------------------
+// Load into memory
+//-----------------------------------------------------
+
+//------------------------------
+//
+// read in the ipv4 header from a file pointer
+//
+// :pm -> packet metadate structure
+// :ih -> ipv4 header structure
+// 
+// returns success
+//------------------------------
+int load_ip_header_f(Packet_Meta pm, IPv4_Header ih);
+
+//------------------------------
+//
+// read in the ethernet header from a file pointer
+// 
+// :pm -> packet metadata structure
+// :eh -> ethernet 2 header structure
+//
+// return success
+//------------------------------
+int load_eII_header_f(Packet_Meta pm, Ethernet_Header eh);
