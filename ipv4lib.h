@@ -85,10 +85,8 @@ struct ethernet_header_s{
     //-------------------------- 48
     uint8_t* source;
     //-------------------------- 96
-    uint32_t llc; // optional - specified in metadata
-    //-------------------------- 128
     uint16_t ethertype;
-    //-------------------------- 144
+    //-------------------------- 112
     // payload
     //-------------------------- 46 - 1500 octets
     uint32_t fcs;
@@ -123,7 +121,8 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih);
 //------------------------------
 //
 // read in the ethernet header from a file pointer
-// 
+// does not read in crc
+//
 // :pm -> packet metadata structure
 // :eh -> ethernet 2 header structure
 //

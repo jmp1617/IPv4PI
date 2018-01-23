@@ -81,5 +81,12 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
 }
 
 int load_eII_header_f(Packet_Meta pm, Ethernet_Header eh){
-
+    //read in the 6 byte destination mac
+    eh->destination = (uint8_t*)calloc(6,sizeof(uint8_t));
+    fread(eh->destination, 1, 6, pm->packet);
+    //read in the source mac
+    eh->source = (uint8_t*)calloc(6,sizeof(uint8_t));
+    fread(eh->source, 1, 6, pm->packet);
+    //read in the ethertype
+    fread(&(eh->ethertype), 2, 1, pm->packet);
 }
