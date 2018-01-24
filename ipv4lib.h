@@ -33,7 +33,6 @@ struct packet_meta_s{
     unsigned ethernet_flag: 1; // whether or not ethernet header is present or stripped
     unsigned fcs_active: 1; // whether or not ethernet checksum included
     unsigned pre_del: 1; // whether or not the preamble and frame delimiter is present
-    unsigned llc: 1; // if 802.1Q tag is present
     //counts
     unsigned int byte_count; // number of bytes in the packet
     unsigned int payload_size;
@@ -104,6 +103,21 @@ IPv4_Header create_ip_header();
 Ethernet_Header create_eII_header();
 
 //-----------------------------------------------------
+//
+// fill in the packet meta data
+//
+//
+//
+//-----------------------------------------------------
+void init_packet_meta();
+
+//-----------------------------------------------------
+// Auxilary
+//-----------------------------------------------------
+
+void print_usage(char* usage);
+
+//-----------------------------------------------------
 // Load into memory
 //-----------------------------------------------------
 
@@ -111,7 +125,7 @@ Ethernet_Header create_eII_header();
 //
 // read in the ipv4 header from a file pointer
 //
-// :pm -> packet metadate structure
+// :pm -> packet metadata structure
 // :ih -> ipv4 header structure
 // 
 // returns success
