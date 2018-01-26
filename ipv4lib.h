@@ -26,6 +26,8 @@
 // if the ethernet checksum is also present then the respecive flag will
 // be one and the checksum can be evaluated and recomputed.
 //
+// if they byte count or payload size are 0 they have not yet been set
+//
 //------------------------------
 struct packet_meta_s{
     FILE* packet;
@@ -103,13 +105,17 @@ IPv4_Header create_ip_header();
 Ethernet_Header create_eII_header();
 
 //-----------------------------------------------------
-//
-// fill in the packet meta data
-//
-//
-//
+// set the initial packet metadata
+// 
+// pm-> packet meta data structure: Packet_Meta
+// fn-> file name: string
+// eth-> use ethernet header: flag (int 0 or 1)
+// fcs-> frame check sum: flag (int 0 or 1)
+// pre-> preamble and sync present: flag (int 0 or 1)
+// bc-> byte count: int
+// ps-> payload size: int
 //-----------------------------------------------------
-void init_packet_meta();
+int init_md_f(Packet_Meta pm, char* fn, int eth, int fcs, int pre, unsigned int bc, unsigned int ps);
 
 //-----------------------------------------------------
 // Auxilary

@@ -42,6 +42,18 @@ Ethernet_Header create_eII_header(){
     }
 }
 
+int init_md_f(Packet_Meta pm, char* fn, int eth, int fcs, int pre, unsigned int bc, unsigned int ps){
+    if(pm){
+        pm->packet = fopen(fn, "wr");
+        pm->ethernet_flag|=eth;
+        pm->fcs_active|=fcs;
+        pm->pre_del|=pre;
+        pm->byte_count = 0;
+        pm->payload_size = 0;
+    }
+    fprintf(stderr,"Packet meta struct is Null\n");
+}
+
 //-----------------------------------------------------
 // Auxilary
 //-----------------------------------------------------
