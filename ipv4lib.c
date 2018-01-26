@@ -50,8 +50,10 @@ int init_md_f(Packet_Meta pm, char* fn, int eth, int fcs, int pre, unsigned int 
         pm->pre_del|=pre;
         pm->byte_count = 0;
         pm->payload_size = 0;
+        return 1;
     }
     fprintf(stderr,"Packet meta struct is Null\n");
+    return 0;
 }
 
 //-----------------------------------------------------
