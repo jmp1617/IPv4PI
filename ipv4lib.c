@@ -35,8 +35,11 @@ IPv4_Header create_ip_header(){
 
 Ethernet_Header create_eII_header(){
     Ethernet_Header eh = (Ethernet_Header)calloc(1, sizeof(struct ethernet_header_s));
-    if(eh)
+    if(eh){
+        eh->destination = calloc(6, sizeof(uint8_t));
+        eh->source = calloc(6, sizeof(uint8_t));
         return eh;
+    }
     else{
         fprintf(stderr, "Calloc failed at creating Eth header\n");
         return 0;
@@ -59,7 +62,7 @@ Packet create_packet(){
 
 int init_md_f(Packet_Meta pm, char* fn, int eth, int fcs, int pre, unsigned int bc, unsigned int ps){
     if(pm){
-        pm->packet = fopen(fn, "wr");
+        pm->packet = fopen(fn, "r");
         if(!pm->packet){
             fprintf(stderr,"Could not open file\n");
             return 0;
@@ -123,6 +126,7 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
     fread(&(ih->source_ip), 4, 1, pm->packet);
     //dest ip
     fread(&(ih->destination_ip), 4, 1, pm->packet);
+    printf("-> Read in 128 bytes\n");
     return 1;
 }
 
@@ -139,5 +143,38 @@ int load_eII_header_f(Packet_Meta pm, Ethernet_Header eh){
     fread(eh->source, 1, 6, pm->packet);
     //read in the ethertype
     fread(&(eh->ethertype), 2, 1, pm->packet);
+    printf("-> Read in 112 bytes\n");
     return 1;
+}
+
+//-----------------------------------------------------
+// display functions - ethernet
+//-----------------------------------------------------
+void de_destination(Packet p){
+    for(int byte = 0; byte<6; byte++){
+        if(byte!=5)
+            printf("%02x:",*(p->eh->destination+byte));
+        else
+            printf("%02x",*(p->eh->destination+byte));
+    }
+}
+
+void de_source(Packet p){
+    for(int byte = 0; byte<6; byte++){
+        if(byte!=5)
+            printf("%02x:",*(p->eh->source+byte));
+        else
+            printf("%02x",*(p->eh->source+byte));
+    }
+}
+
+void de_ethtype(Packet p){
+    printf("0x%04x", ntohs(p->eh->ethertype));
+}
+
+void de_fcs(Packet p){
+    if(p->eh->fcs)
+        printf("0x%08x", ntohl(p->eh->fcs));
+    else
+        printf("fcs not active");
 }

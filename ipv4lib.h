@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <arpa/inet.h>
 
 //Macros
 
@@ -163,3 +164,11 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih);
 // return success
 //------------------------------
 int load_eII_header_f(Packet_Meta pm, Ethernet_Header eh);
+
+//-----------------------------------------------------
+// display functions - ethernet
+//-----------------------------------------------------
+void de_destination(Packet p);
+void de_source(Packet p);
+void de_ethtype(Packet p);
+void de_fcs(Packet p);

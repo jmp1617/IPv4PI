@@ -23,9 +23,25 @@ int main(int args, char* argv[]){
         return 1;
     }
     else{
+        printf("INIT\n");
         // Create Packet metadata
         Packet_Meta pm = create_packet_meta();
+        // Create Packet data store
+        Packet p = create_packet();
         //init packet meta
         init_md_f(pm, argv[1], strtol(argv[2],NULL,10), strtol(argv[3],NULL,10), strtol(argv[4],NULL,10), 0, 0);
+        //read in eth header if it exists
+        if(pm->ethernet_flag){
+            printf("READING IN ETHERNET HEADER\n");
+            load_eII_header_f(pm, p->eh); 
+        }
+        printf("READING IN IP HEADER\n");
+        de_destination(p);
+        printf("\n");
+        de_source(p);
+        printf("\n");
+        de_ethtype(p);
+        printf("\n");
+        de_fcs(p);
     }
 }
