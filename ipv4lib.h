@@ -96,6 +96,19 @@ struct ethernet_header_s{
 
 typedef struct ethernet_header_s* Ethernet_Header;
 
+//------------------------------
+//
+// struct to hold packet data
+//
+//------------------------------
+struct packet_s{
+    Ethernet_Header eh;
+    IPv4_Header ih;
+    char* payload;
+};
+
+typedef struct packet_s* Packet;
+
 //-----------------------------------------------------
 // Initialization - memory allocations
 //-----------------------------------------------------
@@ -103,6 +116,7 @@ typedef struct ethernet_header_s* Ethernet_Header;
 Packet_Meta create_packet_meta();
 IPv4_Header create_ip_header();
 Ethernet_Header create_eII_header();
+Packet create_packet();
 
 //-----------------------------------------------------
 // set the initial packet metadata

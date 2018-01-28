@@ -43,9 +43,27 @@ Ethernet_Header create_eII_header(){
     }
 }
 
+Packet create_packet(){
+    Packet p = (Packet)calloc(1, sizeof(struct packet_s));
+    if(p){
+        p->eh = create_eII_header();
+        p->ih = create_ip_header();
+        p->payload = 0;
+        return p;
+    }
+    else{
+        fprintf(stderr, "Calloc failed at creating Packet\n");
+        return 0;
+    }
+}
+
 int init_md_f(Packet_Meta pm, char* fn, int eth, int fcs, int pre, unsigned int bc, unsigned int ps){
     if(pm){
         pm->packet = fopen(fn, "wr");
+        if(!pm->packet){
+            fprintf(stderr,"Could not open file\n");
+            return 0;
+        }
         pm->ethernet_flag|=eth;
         pm->fcs_active|=fcs;
         pm->pre_del|=pre;
