@@ -1,4 +1,6 @@
 byte_extract
+payload_inject
+packet_info
 
 # Prerequisites
 *.d
