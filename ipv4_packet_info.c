@@ -36,12 +36,12 @@ int main(int args, char* argv[]){
             load_eII_header_f(pm, p->eh); 
         }
         printf("READING IN IP HEADER\n");
-        de_destination(p);
-        printf("\n");
-        de_source(p);
-        printf("\n");
-        de_ethtype(p);
-        printf("\n");
-        de_fcs(p);
+        
+        printf("\n\n----Ethernet Header----\n");
+        printf("Destination MAC: ");de_destination(p);
+        printf("\nSource MAC: ");de_source(p);
+        printf("\nType: ");de_ethtype(p);
+        printf("\nFrame checksum: ");de_fcs(p);
+        printf("\n-----------------------\n\n");
     }
 }
