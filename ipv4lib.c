@@ -1,4 +1,4 @@
-//--------------------------------
+//---https://www.google.com/-----------------------------
 //
 // Set of functions and routines 
 // for packet inpection/disection
@@ -7,7 +7,7 @@
 //
 //-------------------------------
 
-#include <ipv4lib.h>
+#include "ipv4lib.h"
 
 //-----------------------------------------------------
 // Initialization
@@ -39,6 +39,7 @@ Ethernet_Header create_eII_header(){
         return eh;
     else{
         fprintf(stderr, "Calloc failed at creating Eth header\n");
+        return 0;
     }
 }
 
@@ -48,8 +49,8 @@ int init_md_f(Packet_Meta pm, char* fn, int eth, int fcs, int pre, unsigned int 
         pm->ethernet_flag|=eth;
         pm->fcs_active|=fcs;
         pm->pre_del|=pre;
-        pm->byte_count = 0;
-        pm->payload_size = 0;
+        pm->byte_count = bc;
+        pm->payload_size = ps;
         return 1;
     }
     fprintf(stderr,"Packet meta struct is Null\n");
@@ -70,6 +71,10 @@ void print_usage(char* usage){
 
 int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
     //read in first byte containing both version and IHL
+    if(!pm || !ih){
+        fprintf(stderr,"Either Packet_Meta or IPv4_Header is null\n");
+        return 0;
+    }
     uint8_t temp;
     uint16_t temp16;
     fread(&temp, 1, 1, pm->packet);
@@ -100,9 +105,14 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
     fread(&(ih->source_ip), 4, 1, pm->packet);
     //dest ip
     fread(&(ih->destination_ip), 4, 1, pm->packet);
+    return 1;
 }
 
 int load_eII_header_f(Packet_Meta pm, Ethernet_Header eh){
+    if(!pm || !eh){
+        fprintf(stderr,"Either Packet_Meta or Eth_Header is null\n");
+        return 0;
+    }
     //read in the 6 byte destination mac
     eh->destination = (uint8_t*)calloc(6,sizeof(uint8_t));
     fread(eh->destination, 1, 6, pm->packet);
@@ -111,4 +121,5 @@ int load_eII_header_f(Packet_Meta pm, Ethernet_Header eh){
     fread(eh->source, 1, 6, pm->packet);
     //read in the ethertype
     fread(&(eh->ethertype), 2, 1, pm->packet);
+    return 1;
 }
