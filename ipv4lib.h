@@ -172,3 +172,19 @@ void de_destination(Packet p);
 void de_source(Packet p);
 void de_ethtype(Packet p);
 void de_fcs(Packet p);
+
+//-----------------------------------------------------
+// display functions - ipv4
+//-----------------------------------------------------
+void di_version(Packet p);
+void di_headerlen(Packet p);
+void di_dscp(Packet p);
+void di_totlen(Packet p);
+void di_ident(Packet p);
+void di_flags(Packet p);
+void di_fragoff(Packet p);
+void di_ttl(Packet p);
+void di_protocol(Packet p);
+void di_headcheck(Packet p);
+void di_source(Packet p);
+void di_dest(Packet p);

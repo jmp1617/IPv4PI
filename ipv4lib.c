@@ -99,9 +99,9 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
     uint8_t temp;
     uint16_t temp16;
     fread(&temp, 1, 1, pm->packet);
-    ih->version = 0xF & temp; 
-    temp <<= 4;
-    ih->ihl = 0xF & temp;
+    ih->ihl = 0xF & temp; 
+    temp >>= 4;
+    ih->version = 0xF & temp;
     //read in byte containing dscp and ecn
     fread(&temp, 1, 1, pm->packet);
     ih->dscp = 0x3F & temp;
@@ -126,7 +126,6 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
     fread(&(ih->source_ip), 4, 1, pm->packet);
     //dest ip
     fread(&(ih->destination_ip), 4, 1, pm->packet);
-    printf("-> Read in 128 bytes\n");
     return 1;
 }
 
@@ -143,7 +142,6 @@ int load_eII_header_f(Packet_Meta pm, Ethernet_Header eh){
     fread(eh->source, 1, 6, pm->packet);
     //read in the ethertype
     fread(&(eh->ethertype), 2, 1, pm->packet);
-    printf("-> Read in 112 bytes\n");
     return 1;
 }
 
@@ -177,4 +175,19 @@ void de_fcs(Packet p){
         printf("0x%08x", ntohl(p->eh->fcs));
     else
         printf("fcs not active");
+}
+
+//-----------------------------------------------------
+// display functions - ethernet
+//-----------------------------------------------------
+void di_version(Packet p){
+    printf("%d",p->ih->version);
+}
+
+void di_headerlen(Packet p){
+    printf("%d (%d bytes)",p->ih->ihl,((p->ih->ihl)*32)/8);
+}
+
+void di_dscp(Packet p){
+
 }
