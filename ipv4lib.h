@@ -67,8 +67,8 @@ struct ipv4_header_s{
     //-------------------------- 80
     uint16_t header_checksum;
     //-------------------------- 96
-    uint32_t source_ip;
-    uint32_t destination_ip;
+    uint8_t* source_ip;
+    uint8_t* destination_ip;
     //-------------------------- 128
 };
 

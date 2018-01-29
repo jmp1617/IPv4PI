@@ -45,16 +45,16 @@ int main(int args, char* argv[]){
         printf("-------IPv4 Header-------\n");
         printf("Version: ");di_version(p);
         printf("\nHeader Length: ");di_headerlen(p);
-        printf("\nDSCP: ");
-        printf("\nTotal Length: ");
-        printf("\nIdentification: ");
-        printf("\nFlags: ");
-        printf("\nFragment offset: ");
-        printf("\nTtl: ");
-        printf("\nProtocol: ");
-        printf("\nHeader Checksu: ");
-        printf("\nSource: ");
-        printf("\nDestination: ");
+        printf("\nDSCP: ");di_dscp(p);
+        printf("\nTotal Length: ");di_totlen(p);
+        printf("\nIdentification: ");di_ident(p);
+        printf("\nFlags: ");di_flags(p);
+        printf("\nFragment offset: ");di_fragoff(p);
+        printf("\nTtl: ");di_ttl(p);
+        printf("\nProtocol: ");di_protocol(p);
+        printf("\nHeader Checksum: ");di_headcheck(p);
+        printf("\nSource: ");di_source(p);
+        printf("\nDestination: ");di_dest(p);
         printf("\n-------------------------\n");
     }
 }

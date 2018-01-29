@@ -105,7 +105,7 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
     //read in byte containing dscp and ecn
     fread(&temp, 1, 1, pm->packet);
     ih->dscp = 0x3F & temp;
-    temp <<= 6;
+    temp >>= 6;
     ih->ecn = 0x3 & temp;
     //read in total length
     fread(&(ih->total_length), 2, 1, pm->packet);
@@ -113,9 +113,10 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
     fread(&(ih->identification), 2, 1, pm->packet);
     //flags and fragment offset
     fread(&temp16, 2, 1, pm->packet);
-    ih->flags = 0x7 & temp16;
-    temp16 <<= 3;
+    temp16 = ntohs(temp16);
     ih->fragment_offset = 0x1FFF & temp16;
+    temp16 >>= 13;   
+    ih->flags = 0x7 & temp16;
     //ttl byte
     fread(&(ih->ttl), 1, 1, pm->packet);
     //protocol
@@ -123,9 +124,11 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
     //checksum
     fread(&(ih->header_checksum), 2, 1, pm->packet);
     //source ip
-    fread(&(ih->source_ip), 4, 1, pm->packet);
+    ih->source_ip = (uint8_t*)calloc(4,sizeof(uint8_t));
+    fread(ih->source_ip, 1, 4, pm->packet);
     //dest ip
-    fread(&(ih->destination_ip), 4, 1, pm->packet);
+    ih->destination_ip = (uint8_t*)calloc(4,sizeof(uint8_t));
+    fread(ih->destination_ip, 1, 4, pm->packet);
     return 1;
 }
 
@@ -189,5 +192,54 @@ void di_headerlen(Packet p){
 }
 
 void di_dscp(Packet p){
+    uint8_t dsc = 0; dsc = p->ih->dscp & 0x3f;
+    uint8_t temp = p->ih->dscp; temp >>= 6;
+    uint8_t ecn = 0; ecn = temp & 0x3;
+    printf("DSC: %d ECN: %d", dsc, ecn);
+}
 
+void di_totlen(Packet p){
+    printf("%d", ntohs(p->ih->total_length));
+}
+
+void di_ident(Packet p){
+    printf("0x%04x", ntohs(p->ih->identification));
+}
+
+void di_flags(Packet p){
+    printf("(0x%02x) Reserved: %d, Don't fragment: %d, More fragments: %d", p->ih->flags, p->ih->flags&0x4, p->ih->flags&0x2, p->ih->flags&0x1);
+}
+
+void di_fragoff(Packet p){
+    printf("%d", p->ih->fragment_offset);
+}
+
+void di_ttl(Packet p){
+    printf("%d", p->ih->ttl);
+}
+
+void di_protocol(Packet p){
+    printf("%d", p->ih->protocol);
+}
+
+void di_headcheck(Packet p){
+    printf("0x%04x", ntohs(p->ih->header_checksum));
+}
+
+void di_source(Packet p){
+    for(int byte = 0; byte<4; byte++){
+        if(byte<3)
+            printf("%d:", p->ih->source_ip[byte]);
+        else
+            printf("%d", p->ih->source_ip[byte]);
+    }
+}
+
+void di_dest(Packet p){
+    for(int byte = 0; byte<4; byte++){
+        if(byte<3)
+            printf("%d:", p->ih->destination_ip[byte]);
+        else
+            printf("%d", p->ih->destination_ip[byte]);
+    }
 }
