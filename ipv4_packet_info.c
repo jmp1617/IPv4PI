@@ -34,6 +34,8 @@ int main(int args, char* argv[]){
             load_eII_header_f(pm, p->eh); 
         }
         load_ip_header_f(pm, p->ih);
+        
+        printf("Total bytes: %d\n",pm->byte_count);
 
         printf("\n----Ethernet Header----\n");
         printf("Destination MAC: ");de_destination(p);

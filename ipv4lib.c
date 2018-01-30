@@ -129,6 +129,16 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
     //dest ip
     ih->destination_ip = (uint8_t*)calloc(4,sizeof(uint8_t));
     fread(ih->destination_ip, 1, 4, pm->packet);
+    //calculate byte count and payload size
+    pm->payload_size = ntohs(ih->total_length) - ((ih->ihl*32)/8);
+    //calculate total length
+    pm->byte_count = ntohs(ih->total_length);
+    if(pm->ethernet_flag)
+        pm->byte_count += 14;
+    if(pm->fcs_active)
+        pm->byte_count += 4;
+    if(pm->pre_del)
+        pm->byte_count += 8;
     return 1;
 }
 
