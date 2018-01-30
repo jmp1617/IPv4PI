@@ -291,9 +291,16 @@ int load_payload_f(Packet p, Packet_Meta pm){
 }
 
 void display_payload_x(Packet p, Packet_Meta pm){
-    for(int byte = 0; byte<pm->payload_size; byte++){
-        printf("%02x ",10);
-        if(byte%8==0)
-            printf("\n");
+    unsigned align = 0x0;
+    printf("%04x:  ",align);align+=0x8;
+    for(unsigned byte = 1; byte<pm->payload_size+1; byte++){
+        if(byte%8==0){
+            printf("%02x\n",p->payload[byte-1]);
+            if(byte!=pm->payload_size){
+                printf("%04x:  ",align);align+=0x8;
+            }
+        }
+        else
+            printf("%02x ",p->payload[byte-1]);
     }
 }

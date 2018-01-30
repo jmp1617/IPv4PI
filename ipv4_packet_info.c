@@ -34,7 +34,8 @@ int main(int args, char* argv[]){
             load_eII_header_f(pm, p->eh); 
         }
         load_ip_header_f(pm, p->ih);
-        
+        load_payload_f(p, pm);
+
         printf("Total bytes: %d\n",pm->byte_count);
 
         printf("\n----Ethernet Header----\n");
@@ -61,5 +62,6 @@ int main(int args, char* argv[]){
 
         printf("\n---------Payload---------\n");
         printf("Payload byte count: %d\n",pm->payload_size);
+        printf("Payload:\n");display_payload_x(p,pm);
     }
 }
