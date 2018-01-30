@@ -188,3 +188,28 @@ void di_protocol(Packet p);
 void di_headcheck(Packet p);
 void di_source(Packet p);
 void di_dest(Packet p);
+
+//-----------------------------------------------------
+// payload
+//-----------------------------------------------------
+
+//------------------------------
+//
+// display the packet bytewise and indent on bi word (64 bit)
+// hexadecimal
+// 
+// :pm -> packet metadata struct
+// :p -> packet struct
+//------------------------------
+void display_payload_x(Packet p, Packet_Meta pm);
+
+//------------------------------
+//
+// display the packet in ascii chars and indent on bi word
+// 
+// :no_a_c -> char to print if not in ascii encoding
+// :pm -> packet metadata struct
+// :p -> packet struct
+//
+//------------------------------
+void display_payload_c(Packet p, Packet_Meta pm, char no_a_c);

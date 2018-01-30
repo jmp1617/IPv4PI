@@ -58,5 +58,8 @@ int main(int args, char* argv[]){
         printf("\nSource: ");di_source(p);
         printf("\nDestination: ");di_dest(p);
         printf("\n-------------------------\n");
+
+        printf("\n---------Payload---------\n");
+        printf("Payload byte count: %d\n",pm->payload_size);
     }
 }
