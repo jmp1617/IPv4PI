@@ -38,14 +38,16 @@ int main(int args, char* argv[]){
 
         printf("Total bytes: %d\n",pm->byte_count);
 
-        printf("\n----Ethernet Header----\n");
-        printf("Destination MAC: ");de_destination(p);
-        printf("\nSource MAC: ");de_source(p);
-        printf("\nType: ");de_ethtype(p);
-        printf("\nFrame checksum: ");de_fcs(p);
-        printf("\n-----------------------\n\n");
+        if(pm->ethernet_flag){
+            printf("\n--------Ethernet Header-------\n");
+            printf("Destination MAC: ");de_destination(p);
+            printf("\nSource MAC: ");de_source(p);
+            printf("\nType: ");de_ethtype(p);
+            printf("\nFrame checksum: ");de_fcs(p);
+            printf("\n------------------------------\n");
+        }
 
-        printf("-------IPv4 Header-------\n");
+        printf("\n----------IPv4 Header---------\n");
         printf("Version: ");di_version(p);
         printf("\nHeader Length: ");di_headerlen(p);
         printf("\nDSCP: ");di_dscp(p);
@@ -58,11 +60,12 @@ int main(int args, char* argv[]){
         printf("\nHeader Checksum: ");di_headcheck(p);
         printf("\nSource: ");di_source(p);
         printf("\nDestination: ");di_dest(p);
-        printf("\n-------------------------\n");
+        printf("\n------------------------------\n");
 
-        printf("\n---------Payload---------\n");
+        printf("\n-----------Payload------------\n");
         printf("Payload byte count: %d\n",pm->payload_size);
-        printf("Payload:\n");display_payload_x(p,pm);
-        printf("Payload (ascii representation):\n");display_payload_c(p,pm,'.');
+        printf("\nPayload:\n");display_payload_x(p,pm);
+        printf("\nPayload (ascii representation):\n");display_payload_c(p,pm,'.');
+        printf("------------------------------\n");
     }
 }
