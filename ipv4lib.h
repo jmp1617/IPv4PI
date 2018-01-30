@@ -105,7 +105,7 @@ typedef struct ethernet_header_s* Ethernet_Header;
 struct packet_s{
     Ethernet_Header eh;
     IPv4_Header ih;
-    char* payload;
+    uint8_t* payload;
 };
 
 typedef struct packet_s* Packet;
@@ -119,7 +119,7 @@ IPv4_Header create_ip_header();
 Ethernet_Header create_eII_header();
 Packet create_packet();
 
-//-----------------------------------------------------
+//--------------( k λ )/|---------------------------------------
 // set the initial packet metadata
 // 
 // pm-> packet meta data structure: Packet_Meta
@@ -193,6 +193,16 @@ void di_dest(Packet p);
 // payload
 //-----------------------------------------------------
 
+//-----------------------------------------------------
+//
+// read in the payload bytes
+//
+// :p -> packet structure
+//
+// return sucess
+//-----------------------------------------------------
+int load_payload_f(Packet p, Packet_Meta pm);
+
 //------------------------------
 //
 // display the packet bytewise and indent on bi word (64 bit)
@@ -207,7 +217,8 @@ void display_payload_x(Packet p, Packet_Meta pm);
 //
 // display the packet in ascii chars and indent on bi word
 // 
-// :no_a_c -> char to print if not in ascii encoding
+// :no_a_c -> char to print if not in extended ascii encoding
+//      or non visual
 // :pm -> packet metadata struct
 // :p -> packet struct
 //

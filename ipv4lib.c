@@ -125,9 +125,17 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
     fread(&(ih->header_checksum), 2, 1, pm->packet);
     //source ip
     ih->source_ip = (uint8_t*)calloc(4,sizeof(uint8_t));
+    if(!ih->source_ip){
+        fprintf(stderr,"Calloc failed at allocating source ip\n");
+        return 0;
+    }
     fread(ih->source_ip, 1, 4, pm->packet);
     //dest ip
     ih->destination_ip = (uint8_t*)calloc(4,sizeof(uint8_t));
+    if(!ih->destination_ip){
+        fprintf(stderr,"Calloc failed at allocating destination ip\n");
+        return 0;
+    }
     fread(ih->destination_ip, 1, 4, pm->packet);
     //calculate byte count and payload size
     pm->payload_size = ntohs(ih->total_length) - ((ih->ihl*32)/8);
@@ -149,9 +157,17 @@ int load_eII_header_f(Packet_Meta pm, Ethernet_Header eh){
     }
     //read in the 6 byte destination mac
     eh->destination = (uint8_t*)calloc(6,sizeof(uint8_t));
+    if(!eh->destination){
+        fprintf(stderr,"Calloc failed at allocating destination mac\n");
+        return 0;
+    }
     fread(eh->destination, 1, 6, pm->packet);
     //read in the source mac
     eh->source = (uint8_t*)calloc(6,sizeof(uint8_t));
+    if(!eh->source){
+        fprintf(stderr,"Calloc failed at allocating source mac\n");
+        return 0;
+    }
     fread(eh->source, 1, 6, pm->packet);
     //read in the ethertype
     fread(&(eh->ethertype), 2, 1, pm->packet);
@@ -251,5 +267,33 @@ void di_dest(Packet p){
             printf("%d:", p->ih->destination_ip[byte]);
         else
             printf("%d", p->ih->destination_ip[byte]);
+    }
+}
+
+//-----------------------------------------------------
+// payload
+//-----------------------------------------------------
+
+int load_payload_f(Packet p, Packet_Meta pm){
+    if(!p->ih)
+        fprintf(stderr,"Warning; ip header is unloaded, continuing anyway.\n");
+    if(!p || !pm){
+        fprintf(stderr,"Error, packet or packet meta is NULL\n");
+        return 0;
+    }
+    p->payload = (uint8_t*)calloc(pm->payload_size,sizeof(uint8_t));
+    if(!p->payload){
+        fprintf(stderr,"Calloc failed at allocating payload\n");
+        return 0;
+    }
+    fread(p->payload, 1, pm->payload_size, pm->packet);
+    return 1;
+}
+
+void display_payload_x(Packet p, Packet_Meta pm){
+    for(int byte = 0; byte<pm->payload_size; byte++){
+        printf("%02x ",10);
+        if(byte%8==0)
+            printf("\n");
     }
 }
