@@ -304,3 +304,23 @@ void display_payload_x(Packet p, Packet_Meta pm){
             printf("%02x ",p->payload[byte-1]);
     }
 }
+
+void display_payload_c(Packet p, Packet_Meta pm, char no_a_c){
+    unsigned align = 0x0;
+    unsigned ch = 0;
+    printf("%04x:  ",align);align+=0x8;
+    for(unsigned byte = 1; byte<pm->payload_size+1; byte++){
+        ch = p->payload[byte-1];
+        //non printables
+        if(p->payload[byte-1] < 32 || p->payload[byte-1] == 127)
+            ch = no_a_c;
+        if(byte%8==0){
+            printf(" %c\n", ch);
+            if(byte!=pm->payload_size){
+                printf("%04x:  ",align);align+=0x8;
+            }
+        }
+        else
+            printf(" %c ", ch);
+    }
+}

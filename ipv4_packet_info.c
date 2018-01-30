@@ -63,5 +63,6 @@ int main(int args, char* argv[]){
         printf("\n---------Payload---------\n");
         printf("Payload byte count: %d\n",pm->payload_size);
         printf("Payload:\n");display_payload_x(p,pm);
+        printf("Payload (ascii representation):\n");display_payload_c(p,pm,'.');
     }
 }
