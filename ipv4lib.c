@@ -89,6 +89,16 @@ void print_usage(char* usage){
     printf("%s", usage);
 }
 
+void byte_replace(uint8_t* bytes, uint8_t* nbytes, int ibc, int nbc, int off){
+    if(off+nbc > ibc)
+        fprintf(stderr,"Offset to large\n");
+    else{
+        for(int byte = 0; byte < nbc; byte++){
+            bytes[byte+off] = nbytes[byte];
+        }
+    }
+}
+
 //-----------------------------------------------------
 // Load into Memory
 //-----------------------------------------------------

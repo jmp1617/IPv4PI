@@ -66,7 +66,7 @@ int main(int args, char* argv[]){
         printf("Payload byte count: %d\n",pm->payload_size);
         printf("\nPayload:\n");display_payload_x(p,pm);
         printf("\nPayload (ascii representation):\n");display_payload_c(p,pm,'.');
-        printf("------------------------------\n");
+        printf("------------------------------\n\n");
 
         destructor(pm, p);
     }

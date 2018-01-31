@@ -119,7 +119,7 @@ IPv4_Header create_ip_header();
 Ethernet_Header create_eII_header();
 Packet create_packet();
 
-//--------------( k λ )/|---------------------------------------
+//-----------------------------------------------------
 // set the initial packet metadata
 // 
 // pm-> packet meta data structure: Packet_Meta
@@ -137,6 +137,20 @@ int init_md_f(Packet_Meta pm, char* fn, int eth, int fcs, int pre, unsigned int 
 //-----------------------------------------------------
 
 void print_usage(char* usage);
+
+//------------------------------
+//
+// routine to replace specified bytes in a byte array with new
+// bytes based on an offset
+//
+// :bytes -> initial byte array
+// :nbytes -> new bytes to replace
+// :ibc -> initial byte count
+// :nbc -> new byte count (byte count of nbytes)
+// :off -> offset from 0 to replace
+//
+//------------------------------
+void byte_replace(uint8_t* bytes, uint8_t* nbytes, int ibc, int nbc, int off);
 
 //-----------------------------------------------------
 // Load into memory
