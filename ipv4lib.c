@@ -25,8 +25,11 @@ Packet_Meta create_packet_meta(){
 
 IPv4_Header create_ip_header(){
     IPv4_Header ih = (IPv4_Header)calloc(1, sizeof(struct ipv4_header_s));
-    if(ih)
+    if(ih){
+        ih->source_ip = (uint8_t*)calloc(4,sizeof(uint8_t));
+        ih->destination_ip = (uint8_t*)calloc(4,sizeof(uint8_t));
         return ih;
+    }
     else{
         fprintf(stderr, "Calloc failed at creating IP header\n");
         return 0;
@@ -36,8 +39,8 @@ IPv4_Header create_ip_header(){
 Ethernet_Header create_eII_header(){
     Ethernet_Header eh = (Ethernet_Header)calloc(1, sizeof(struct ethernet_header_s));
     if(eh){
-        eh->destination = calloc(6, sizeof(uint8_t));
-        eh->source = calloc(6, sizeof(uint8_t));
+        eh->destination = (uint8_t*)calloc(6, sizeof(uint8_t));
+        eh->source = (uint8_t*)calloc(6, sizeof(uint8_t));
         return eh;
     }
     else{
@@ -124,18 +127,8 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
     //checksum
     fread(&(ih->header_checksum), 2, 1, pm->packet);
     //source ip
-    ih->source_ip = (uint8_t*)calloc(4,sizeof(uint8_t));
-    if(!ih->source_ip){
-        fprintf(stderr,"Calloc failed at allocating source ip\n");
-        return 0;
-    }
     fread(ih->source_ip, 1, 4, pm->packet);
     //dest ip
-    ih->destination_ip = (uint8_t*)calloc(4,sizeof(uint8_t));
-    if(!ih->destination_ip){
-        fprintf(stderr,"Calloc failed at allocating destination ip\n");
-        return 0;
-    }
     fread(ih->destination_ip, 1, 4, pm->packet);
     //calculate byte count and payload size
     pm->payload_size = ntohs(ih->total_length) - ((ih->ihl*32)/8);
@@ -156,18 +149,8 @@ int load_eII_header_f(Packet_Meta pm, Ethernet_Header eh){
         return 0;
     }
     //read in the 6 byte destination mac
-    eh->destination = (uint8_t*)calloc(6,sizeof(uint8_t));
-    if(!eh->destination){
-        fprintf(stderr,"Calloc failed at allocating destination mac\n");
-        return 0;
-    }
     fread(eh->destination, 1, 6, pm->packet);
     //read in the source mac
-    eh->source = (uint8_t*)calloc(6,sizeof(uint8_t));
-    if(!eh->source){
-        fprintf(stderr,"Calloc failed at allocating source mac\n");
-        return 0;
-    }
     fread(eh->source, 1, 6, pm->packet);
     //read in the ethertype
     fread(&(eh->ethertype), 2, 1, pm->packet);
@@ -207,7 +190,7 @@ void de_fcs(Packet p){
 }
 
 //-----------------------------------------------------
-// display functions - ethernet
+// display functions - ip
 //-----------------------------------------------------
 void di_version(Packet p){
     printf("%d",p->ih->version);
@@ -323,4 +306,36 @@ void display_payload_c(Packet p, Packet_Meta pm, char no_a_c){
         else
             printf(" %c ", ch);
     }
+}
+
+//-----------------------------------------------------
+// destruction
+//-----------------------------------------------------
+
+int destructor(Packet_Meta pm, Packet p){
+    if(!pm || !p){
+        fprintf(stderr,"Packet meta and/or packet are Null\n");
+        return 0;
+    }
+    if(pm->packet)
+        fclose(pm->packet);
+    if(p->payload)
+        free(p->payload);
+    if(p->ih){
+        if(p->ih->source_ip)
+            free(p->ih->source_ip);
+        if(p->ih->destination_ip)
+            free(p->ih->destination_ip);
+        free(p->ih);
+    }
+    if(p->eh){
+        if(p->eh->destination)
+            free(p->eh->destination);
+        if(p->eh->source)
+            free(p->eh->source);
+        free(p->eh);
+    }
+    free(pm);
+    free(p);
+    return 1;
 }

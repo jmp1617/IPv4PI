@@ -67,5 +67,7 @@ int main(int args, char* argv[]){
         printf("\nPayload:\n");display_payload_x(p,pm);
         printf("\nPayload (ascii representation):\n");display_payload_c(p,pm,'.');
         printf("------------------------------\n");
+
+        destructor(pm, p);
     }
 }

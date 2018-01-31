@@ -224,3 +224,19 @@ void display_payload_x(Packet p, Packet_Meta pm);
 //
 //------------------------------
 void display_payload_c(Packet p, Packet_Meta pm, char no_a_c);
+
+//-----------------------------------------------------
+// destruction
+//-----------------------------------------------------
+
+//------------------------------
+//
+// deallocates all allocated memeory in packet and closes the file
+// if used
+//
+// :pm -> packet metadata struct
+// :p -> packet struct
+// 
+// return success
+//------------------------------
+int destructor(Packet_Meta pm, Packet p);
