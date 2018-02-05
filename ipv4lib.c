@@ -373,6 +373,13 @@ int destructor(Packet_Meta pm, Packet p){
             free(p->eh->source);
         free(p->eh);
     }
+    if(p->th){
+        if(p->th->options)
+            free(p->th->options);
+        free(p->th);
+    }
+    if(p->uh)
+        free(p->uh);
     free(pm);
     free(p);
     return 1;
