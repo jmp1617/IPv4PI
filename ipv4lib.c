@@ -65,10 +65,15 @@ Packet create_packet(){
 
 int init_md_f(Packet_Meta pm, char* fn, int eth, int fcs, int pre, unsigned int bc, unsigned int ps){
     if(pm){
-        pm->packet = fopen(fn, "r");
-        if(!pm->packet){
-            fprintf(stderr,"Could not open file\n");
-            return 0;
+        if(fn[0]=='0'){
+            pm->packet = stdin;
+        }
+        else{
+            pm->packet = fopen(fn, "r");
+            if(!pm->packet){
+                fprintf(stderr,"Could not open file\n");
+                return 0;
+            }
         }
         pm->ethernet_flag|=eth;
         pm->fcs_active|=fcs;
@@ -280,6 +285,7 @@ int load_payload_f(Packet p, Packet_Meta pm){
         return 0;
     }
     fread(p->payload, 1, pm->payload_size, pm->packet);
+
     return 1;
 }
 
