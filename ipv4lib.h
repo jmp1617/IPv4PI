@@ -101,6 +101,10 @@ typedef struct ethernet_header_s* Ethernet_Header;
 //
 // TCP Header
 //
+// options field byte count is 
+// calculated by taking the (data_offset *
+// 32 / 8) - 20
+//
 //------------------------------
 struct tcp_header_s{
     //-------------------------- 0
@@ -141,6 +145,7 @@ struct tcp_header_s{
     uint16_t urgent_point;
     //-------------------------- 160
     uint8_t* options;
+    //-------------------------- 160 - 480
 };
 
 typedef struct tcp_header_s* TCP_Header;
@@ -160,7 +165,7 @@ struct udp_header_s{
     //-------------------------- 48
     uint16_t check;
     //-------------------------- 64
-}
+};
 
 typedef struct udp_header_s* UDP_Header;
 
@@ -172,6 +177,8 @@ typedef struct udp_header_s* UDP_Header;
 struct packet_s{
     Ethernet_Header eh;
     IPv4_Header ih;
+    TCP_Header th;
+    UDP_Header uh;
     uint8_t* payload;
 };
 

@@ -49,11 +49,33 @@ Ethernet_Header create_eII_header(){
     }
 }
 
+TCP_Header create_tcp_header(){
+    TCP_Header th = (TCP_Header)calloc(1, sizeof(struct tcp_header_s));
+    if(th)
+        return th;
+    else{
+        fprintf(stderr, "Calloc failed at creating tcp header\n");
+        return 0;
+    }
+}
+
+UDP_Header create_udp_header(){
+    UDP_Header uh = (UDP_Header)calloc(1, sizeof(struct udp_header_s));
+    if(uh)
+        return uh;
+    else{
+        fprintf(stderr, "Calloc failed at creating udp header\n");
+        return 0;
+    }
+}
+
 Packet create_packet(){
     Packet p = (Packet)calloc(1, sizeof(struct packet_s));
     if(p){
         p->eh = create_eII_header();
         p->ih = create_ip_header();
+        p->th = NULL; // will be created based on the ipv4 protocol
+        p->uh = NULL;
         p->payload = 0;
         return p;
     }
