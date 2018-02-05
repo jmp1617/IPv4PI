@@ -194,6 +194,62 @@ int load_eII_header_f(Packet_Meta pm, Ethernet_Header eh){
     return 1;
 }
 
+int load_tcp_header(Packet_Meta pm, TCP_Header th){
+    if(!pm || !th){
+        fprintf(stderr, "Either Packet_Meta or TCP_Header is null\n");
+        return 0;
+    }
+    //read in source port
+    fread(&th->source_port, 2, 1, pm->packet);
+    //read in dest port
+    fread(&th->destin_port, 2, 1, pm->packet);
+    //read in sequence number
+    fread(&th->seq_num, 4, 1, pm->packet);
+    //read in the ack number 
+    fread(&th->ack_number, 4, 1, pm->packet);
+    uint8_t temp;
+    fread(&temp, 1, 1, pm->packet);
+    //ns flag
+    th->ns = 0x1 & temp;
+    temp >>= 1;
+    //reserved should be zero
+    th->reserved = 0x7 & temp;
+    temp >>= 3;
+    //data_offset 
+    th->data_offset = 0xF & temp;
+    fread(&temp, 1, 1, pm->packet);
+    //the rest of the flags
+    th->fin = 0x1 & temp;temp>>=1;
+    th->syn = 0x1 & temp;temp>>=1;
+    th->rst = 0x1 & temp;temp>>=1;
+    th->psh = 0x1 & temp;temp>>=1;
+    th->ack = 0x1 & temp;temp>>=1;
+    th->urg = 0x1 & temp;temp>>=1;
+    th->ece = 0x1 & temp;temp>>=1;
+    th->cwr = 0x1 & temp;temp>>=1;
+    //win_size
+    fread(&th->win_size, 2, 1, pm->packet);
+    //checksum
+    fread(&th->check, 2, 1, pm->packet);
+    //urgent pointer
+    fread(&th->urgent_point, 2, 1, pm->packet);
+    //size of options
+    unsigned o_size = ((th->data_offset * 32) / 8) - 20;
+    th->options = (uint8_t*)calloc(o_size, sizeof(uint8_t));
+    fread(th->options, 1, o_size, pm->packet);
+}
+
+int load_udp_header(Packet_Meta pm, UDP_Header uh){
+    if(!pm || !uh){
+        fprintf(stderr, "Either Packet_Meta or UDP_Header is null\n");
+        return 0;
+    }
+    fread(&uh->source_port, 2, 1, pm->packet);
+    fread(&uh->destin_port, 2, 1, pm->packet);
+    fread(&uh->length, 2, 1, pm->packet);
+    fread(&uh->check, 2, 1, pm->packet);
+}
+
 //-----------------------------------------------------
 // display functions - ethernet
 //-----------------------------------------------------

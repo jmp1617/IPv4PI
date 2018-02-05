@@ -253,6 +253,16 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih);
 //------------------------------
 int load_eII_header_f(Packet_Meta pm, Ethernet_Header eh);
 
+//------------------------------
+//
+// read in the tcp header from a file pointer
+//
+// :pm -> packet metadata structure
+// :th -> tcp header structrue
+//
+//------------------------------
+int load_tcp_header_f(Packet_Meta pm, TCP_Header th);
+
 //-----------------------------------------------------
 // display functions - ethernet
 //-----------------------------------------------------
