@@ -140,6 +140,7 @@ struct tcp_header_s{
     //-------------------------- 144
     uint16_t urgent_point;
     //-------------------------- 160
+    uint8_t* options;
 };
 
 typedef struct tcp_header_s* TCP_Header;
