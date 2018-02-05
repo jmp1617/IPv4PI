@@ -146,6 +146,25 @@ typedef struct tcp_header_s* TCP_Header;
 
 //------------------------------
 //
+// UDP Header
+//
+//------------------------------
+struct udp_header_s{
+    //-------------------------- 0
+    uint16_t source_port;    
+    //-------------------------- 16
+    uint16_t destin_port;
+    //-------------------------- 32
+    uint16_t length;
+    //-------------------------- 48
+    uint16_t check;
+    //-------------------------- 64
+}
+
+typedef struct udp_header_s* UDP_Header;
+
+//------------------------------
+//
 // struct to hold packet data
 //
 //------------------------------
