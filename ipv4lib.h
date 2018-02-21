@@ -298,6 +298,22 @@ void di_source(Packet p);
 void di_dest(Packet p);
 
 //-----------------------------------------------------
+// display fuctions - tcp
+//-----------------------------------------------------
+void di_sport(Packet p);
+void di_dport(Packet p);
+void di_seq(Packet p);
+void di_ack(Packet p);
+void di_ns(Packet p);
+void di_reserved(Packet p);
+void di_data_offset(Packet p);
+void di_flags(Packet p);
+void di_win_size(Packet p);
+void di_check(Packet p);
+void di_urgent_point(Packet p);
+void di_display_options(Packet p);
+
+//-----------------------------------------------------
 // payload
 //-----------------------------------------------------
 
