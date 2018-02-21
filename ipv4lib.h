@@ -263,6 +263,16 @@ int load_eII_header_f(Packet_Meta pm, Ethernet_Header eh);
 //------------------------------
 int load_tcp_header_f(Packet_Meta pm, TCP_Header th);
 
+//------------------------------
+//
+// read in the udp header from a file pointer
+//
+// :pm -> packet metadata structure
+// :uh -> udp header structure
+//
+//------------------------------
+int load_udp_header_f(Packet_Meta pm, TCP_Header uh);
+
 //-----------------------------------------------------
 // display functions - ethernet
 //-----------------------------------------------------
