@@ -237,6 +237,8 @@ int load_tcp_header(Packet_Meta pm, TCP_Header th){
     unsigned o_size = ((th->data_offset * 32) / 8) - 20;
     th->options = (uint8_t*)calloc(o_size, sizeof(uint8_t));
     fread(th->options, 1, o_size, pm->packet);
+
+    return 1;
 }
 
 int load_udp_header(Packet_Meta pm, UDP_Header uh){
@@ -248,6 +250,8 @@ int load_udp_header(Packet_Meta pm, UDP_Header uh){
     fread(&uh->destin_port, 2, 1, pm->packet);
     fread(&uh->length, 2, 1, pm->packet);
     fread(&uh->check, 2, 1, pm->packet);
+
+    return 1;
 }
 
 //-----------------------------------------------------
