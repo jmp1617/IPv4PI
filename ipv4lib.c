@@ -1,6 +1,6 @@
-//---https://www.google.com/-----------------------------
+//--------------------------------
 //
-// Set of functions and routines 
+// Set of functions and routines
 // for packet inpection/disection
 //
 // implimentation
@@ -139,7 +139,7 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
     uint8_t temp;
     uint16_t temp16;
     fread(&temp, 1, 1, pm->packet);
-    ih->ihl = 0xF & temp; 
+    ih->ihl = 0xF & temp;
     temp >>= 4;
     ih->version = 0xF & temp;
     //read in byte containing dscp and ecn
@@ -155,7 +155,7 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
     fread(&temp16, 2, 1, pm->packet);
     temp16 = ntohs(temp16);
     ih->fragment_offset = 0x1FFF & temp16;
-    temp16 >>= 13;   
+    temp16 >>= 13;
     ih->flags = 0x7 & temp16;
     //ttl byte
     fread(&(ih->ttl), 1, 1, pm->packet);
@@ -205,7 +205,7 @@ int load_tcp_header(Packet_Meta pm, TCP_Header th){
     fread(&th->destin_port, 2, 1, pm->packet);
     //read in sequence number
     fread(&th->seq_num, 4, 1, pm->packet);
-    //read in the ack number 
+    //read in the ack number
     fread(&th->ack_number, 4, 1, pm->packet);
     uint8_t temp;
     fread(&temp, 1, 1, pm->packet);
@@ -215,7 +215,7 @@ int load_tcp_header(Packet_Meta pm, TCP_Header th){
     //reserved should be zero
     th->reserved = 0x7 & temp;
     temp >>= 3;
-    //data_offset 
+    //data_offset
     th->data_offset = 0xF & temp;
     fread(&temp, 1, 1, pm->packet);
     //the rest of the flags
