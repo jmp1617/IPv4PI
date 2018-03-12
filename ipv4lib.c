@@ -403,6 +403,23 @@ void dt_win_size(Packet p){
     printf("%u", ntohs(p->th->win_size));
 }
 
+void dt_check(Packet p){
+    printf("0x%04x", ntohs(p->th->check));
+}
+
+void dt_urgent_point(Packet p){
+    printf("%u", ntohs(p->th->urgent_point));
+}
+
+void dt_options(Packet p){
+    unsigned osize = ((p->th->data_offset * 32) / 8) - 20;
+    for(unsigned byte = 1; byte < osize+1; byte++){
+        printf("%02x ", p->th->options[byte-1]);
+        if(byte%4==0&&byte!=osize)
+            printf("\n\t");
+    }
+}
+
 //-----------------------------------------------------
 // payload
 //-----------------------------------------------------

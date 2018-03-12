@@ -312,7 +312,7 @@ void dt_flags(Packet p);
 void dt_win_size(Packet p);
 void dt_check(Packet p);
 void dt_urgent_point(Packet p);
-void dt_display_options(Packet p);
+void dt_options(Packet p);
 
 //-----------------------------------------------------
 // payload

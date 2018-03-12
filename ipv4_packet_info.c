@@ -74,9 +74,13 @@ int main(int args, char* argv[]){
             printf("\nDestination Port: ");dt_dport(p);
             printf("\nSequence Number: ");dt_seq(p);
             printf("\nAcknowledgment Number: ");dt_ack(p);
-            printf("\nData offset: ");dt_data_offset(p);
+            printf("\nData Offset: ");dt_data_offset(p);
             printf("\nReserved: ");dt_reserved(p);
-            printf("\nFlags:\n");dt_flags(p);
+            printf("\nFlags:");dt_flags(p);
+            printf("\nWindow Size: ");dt_win_size(p);
+            printf("\nChecksum: ");dt_check(p);
+            printf("\nUrgent Pointer: ");dt_urgent_point(p);
+            printf("\nOption Bytes:\n\t");dt_options(p);
             printf("\n------------------------------\n\n");
         }
         else{
