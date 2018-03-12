@@ -194,7 +194,7 @@ int load_eII_header_f(Packet_Meta pm, Ethernet_Header eh){
     return 1;
 }
 
-int load_tcp_header(Packet_Meta pm, TCP_Header th){
+int load_tcp_header_f(Packet_Meta pm, TCP_Header th){
     if(!pm || !th){
         fprintf(stderr, "Either Packet_Meta or TCP_Header is null\n");
         return 0;
@@ -348,6 +348,14 @@ void di_dest(Packet p){
         else
             printf("%d", p->ih->destination_ip[byte]);
     }
+}
+
+//-----------------------------------------------------
+// display functions - tcp
+//-----------------------------------------------------
+
+void dt_sport(Packet p){
+    printf("%d", ntohs(p->th->source_port));
 }
 
 //-----------------------------------------------------

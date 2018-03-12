@@ -1,10 +1,10 @@
 //----------------------------------------------------
 //
-// Displays info about ethernet frame and ipv4 packet 
+// Displays info about ethernet frame and ipv4 packet
 // in a human readable form
 //
 // uses ipv4lib
-// 
+//
 //----------------------------------------------------
 
 #include "ipv4lib.h"
@@ -31,10 +31,16 @@ int main(int args, char* argv[]){
         init_md_f(pm, argv[1], strtol(argv[2],NULL,10), strtol(argv[3],NULL,10), strtol(argv[4],NULL,10), 0, 0);
         //read in eth header if it exists
         if(pm->ethernet_flag){
-            load_eII_header_f(pm, p->eh); 
+            load_eII_header_f(pm, p->eh);
         }
         load_ip_header_f(pm, p->ih);
-        load_payload_f(p, pm);
+        if(p->ih->protocol == 6){
+            p->th = create_tcp_header();
+            load_tcp_header_f(pm, p->th);
+        }
+        else{
+            load_payload_f(p, pm);
+        }
 
         printf("Total bytes: %d\n",pm->byte_count);
 
@@ -62,11 +68,19 @@ int main(int args, char* argv[]){
         printf("\nDestination: ");di_dest(p);
         printf("\n------------------------------\n");
 
-        printf("\n-----------Payload------------\n");
-        printf("Payload byte count: %d\n",pm->payload_size);
-        printf("\nPayload:\n");display_payload_x(p,pm);
-        printf("\nPayload (ascii representation):\n");display_payload_c(p,pm,'.');
-        printf("------------------------------\n\n");
+        if(p->ih->protocol == 6){
+            printf("\n-----------TCP----------------\n");
+            printf("Source Port: ");dt_sport(p);
+            printf("\n------------------------------\n\n");
+        }
+        else{
+            printf("\n-----------Payload------------\n");
+            printf("Payload byte count: %d\n",pm->payload_size);
+            printf("\nPayload:\n");display_payload_x(p,pm);
+            printf("\nPayload (ascii representation):\n");display_payload_c(p,pm,'.');
+            printf("------------------------------\n\n");
+        }
+
 
         destructor(pm, p);
     }

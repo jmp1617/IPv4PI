@@ -1,6 +1,6 @@
 //--------------------------------
 //
-// Set of functions and routines 
+// Set of functions and routines
 // for packet inpection/disection
 //
 // spec
@@ -60,7 +60,7 @@ struct ipv4_header_s{
     uint16_t identification;
     //-------------------------- 48
     unsigned flags: 3;
-    unsigned fragment_offset: 13; 
+    unsigned fragment_offset: 13;
     //-------------------------- 64
     uint8_t ttl; // time to live
     uint8_t protocol;
@@ -77,7 +77,7 @@ typedef struct ipv4_header_s* IPv4_Header;
 //------------------------------
 //
 // struct to hold ethernet II header info
-// 
+//
 // does not include preamble or frame delimeter
 //
 //------------------------------
@@ -101,7 +101,7 @@ typedef struct ethernet_header_s* Ethernet_Header;
 //
 // TCP Header
 //
-// options field byte count is 
+// options field byte count is
 // calculated by taking the (data_offset *
 // 32 / 8) - 20
 //
@@ -157,7 +157,7 @@ typedef struct tcp_header_s* TCP_Header;
 //------------------------------
 struct udp_header_s{
     //-------------------------- 0
-    uint16_t source_port;    
+    uint16_t source_port;
     //-------------------------- 16
     uint16_t destin_port;
     //-------------------------- 32
@@ -192,10 +192,12 @@ Packet_Meta create_packet_meta();
 IPv4_Header create_ip_header();
 Ethernet_Header create_eII_header();
 Packet create_packet();
+TCP_Header create_tcp_header();
+UDP_Header create_udp_header();
 
 //-----------------------------------------------------
 // set the initial packet metadata
-// 
+//
 // pm-> packet meta data structure: Packet_Meta
 // fn-> file name: string
 // eth-> use ethernet header: flag (int 0 or 1)
@@ -236,7 +238,7 @@ void byte_replace(uint8_t* bytes, uint8_t* nbytes, int ibc, int nbc, int off);
 //
 // :pm -> packet metadata structure
 // :ih -> ipv4 header structure
-// 
+//
 // returns success
 //------------------------------
 int load_ip_header_f(Packet_Meta pm, IPv4_Header ih);
@@ -300,18 +302,18 @@ void di_dest(Packet p);
 //-----------------------------------------------------
 // display fuctions - tcp
 //-----------------------------------------------------
-void di_sport(Packet p);
-void di_dport(Packet p);
-void di_seq(Packet p);
-void di_ack(Packet p);
-void di_ns(Packet p);
-void di_reserved(Packet p);
-void di_data_offset(Packet p);
-void di_flags(Packet p);
-void di_win_size(Packet p);
-void di_check(Packet p);
-void di_urgent_point(Packet p);
-void di_display_options(Packet p);
+void dt_sport(Packet p);
+void dt_dport(Packet p);
+void dt_seq(Packet p);
+void dt_ack(Packet p);
+void dt_ns(Packet p);
+void dt_reserved(Packet p);
+void dt_data_offset(Packet p);
+void dt_flags(Packet p);
+void dt_win_size(Packet p);
+void dt_check(Packet p);
+void dt_urgent_point(Packet p);
+void dt_display_options(Packet p);
 
 //-----------------------------------------------------
 // payload
@@ -331,7 +333,7 @@ int load_payload_f(Packet p, Packet_Meta pm);
 //
 // display the packet bytewise and indent on bi word (64 bit)
 // hexadecimal
-// 
+//
 // :pm -> packet metadata struct
 // :p -> packet struct
 //------------------------------
@@ -340,7 +342,7 @@ void display_payload_x(Packet p, Packet_Meta pm);
 //------------------------------
 //
 // display the packet in ascii chars and indent on bi word
-// 
+//
 // :no_a_c -> char to print if not in extended ascii encoding
 //      or non visual
 // :pm -> packet metadata struct
@@ -360,7 +362,7 @@ void display_payload_c(Packet p, Packet_Meta pm, char no_a_c);
 //
 // :pm -> packet metadata struct
 // :p -> packet struct
-// 
+//
 // return success
 //------------------------------
 int destructor(Packet_Meta pm, Packet p);
