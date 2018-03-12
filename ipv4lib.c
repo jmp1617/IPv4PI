@@ -238,6 +238,9 @@ int load_tcp_header_f(Packet_Meta pm, TCP_Header th){
     th->options = (uint8_t*)calloc(o_size, sizeof(uint8_t));
     fread(th->options, 1, o_size, pm->packet);
 
+    //recalculate payload size
+    pm->payload_size = pm->payload_size - (((th->data_offset * 32) / 8) + 20);
+
     return 1;
 }
 
