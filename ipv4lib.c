@@ -239,7 +239,7 @@ int load_tcp_header_f(Packet_Meta pm, TCP_Header th){
     fread(th->options, 1, o_size, pm->packet);
 
     //recalculate payload size
-    pm->payload_size = pm->payload_size - (((th->data_offset * 32) / 8) + 20);
+    pm->payload_size = pm->payload_size - ((th->data_offset * 32) / 8);
 
     return 1;
 }

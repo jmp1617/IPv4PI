@@ -38,9 +38,9 @@ int main(int args, char* argv[]){
             p->th = create_tcp_header();
             load_tcp_header_f(pm, p->th);
         }
-        else{
+
+        if(pm->payload_size)
             load_payload_f(p, pm);
-        }
 
         printf("Total bytes: %d\n",pm->byte_count);
 
@@ -83,14 +83,14 @@ int main(int args, char* argv[]){
             printf("\nOption Bytes:\n\t");dt_options(p);
             printf("\n------------------------------\n\n");
         }
-        else{
-            printf("\n-----------Payload------------\n");
-            printf("Payload byte count: %d\n",pm->payload_size);
+
+        printf("\n-----------Payload------------\n");
+        printf("Payload byte count: %d\n",pm->payload_size);
+        if(pm->payload_size>0){
             printf("\nPayload:\n");display_payload_x(p,pm);
             printf("\nPayload (ascii representation):\n");display_payload_c(p,pm,'.');
-            printf("------------------------------\n\n");
         }
-
+        printf("------------------------------\n\n");
 
         destructor(pm, p);
     }
