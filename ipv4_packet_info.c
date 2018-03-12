@@ -71,6 +71,12 @@ int main(int args, char* argv[]){
         if(p->ih->protocol == 6){
             printf("\n-----------TCP----------------\n");
             printf("Source Port: ");dt_sport(p);
+            printf("\nDestination Port: ");dt_dport(p);
+            printf("\nSequence Number: ");dt_seq(p);
+            printf("\nAcknowledgment Number: ");dt_ack(p);
+            printf("\nData offset: ");dt_data_offset(p);
+            printf("\nReserved: ");dt_reserved(p);
+            printf("\nFlags:\n");dt_flags(p);
             printf("\n------------------------------\n\n");
         }
         else{

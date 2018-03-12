@@ -358,6 +358,49 @@ void dt_sport(Packet p){
     printf("%d", ntohs(p->th->source_port));
 }
 
+void dt_dport(Packet p){
+    printf("%d", ntohs(p->th->destin_port));
+}
+
+void dt_seq(Packet p){
+    printf("%u", ntohl(p->th->seq_num));
+}
+
+void dt_ack(Packet p){
+    printf("%u", ntohl(p->th->ack_number));
+}
+
+void dt_reserved(Packet p){ // should be zero
+    printf("%d", p->th->reserved);
+}
+
+void dt_data_offset(Packet p){
+    printf("%d", p->th->data_offset);
+}
+
+void dt_flags(Packet p){
+    printf("\tns:  %d\
+    \n\tcwr: %d\
+    \n\tece: %d\
+    \n\turg: %d\
+    \n\tack: %d\
+    \n\tpsh: %d\
+    \n\trst: %d\
+    \n\tsyn: %d\
+    \n\tfin: %d",
+    p->th->ns,
+    p->th->cwr,
+    p->th->ece,
+    p->th->urg,
+    p->th->ack,
+    p->th->psh,
+    p->th->rst,
+    p->th->syn,
+    p->th->fin);
+}
+
+
+
 //-----------------------------------------------------
 // payload
 //-----------------------------------------------------

@@ -306,7 +306,6 @@ void dt_sport(Packet p);
 void dt_dport(Packet p);
 void dt_seq(Packet p);
 void dt_ack(Packet p);
-void dt_ns(Packet p);
 void dt_reserved(Packet p);
 void dt_data_offset(Packet p);
 void dt_flags(Packet p);
