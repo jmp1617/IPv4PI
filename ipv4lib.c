@@ -290,22 +290,22 @@ void de_fcs(Packet p){
 // display functions - ip
 //-----------------------------------------------------
 void di_version(Packet p){
-    printf("%d",p->ih->version);
+    printf("%u",p->ih->version);
 }
 
 void di_headerlen(Packet p){
-    printf("%d (%d bytes)",p->ih->ihl,((p->ih->ihl)*32)/8);
+    printf("%u (%u bytes)",p->ih->ihl,((p->ih->ihl)*32)/8);
 }
 
 void di_dscp(Packet p){
     uint8_t dsc = 0; dsc = p->ih->dscp & 0x3f;
     uint8_t temp = p->ih->dscp; temp >>= 6;
     uint8_t ecn = 0; ecn = temp & 0x3;
-    printf("DSC: %d ECN: %d", dsc, ecn);
+    printf("DSC: %u ECN: %u", dsc, ecn);
 }
 
 void di_totlen(Packet p){
-    printf("%d", ntohs(p->ih->total_length));
+    printf("%u", ntohs(p->ih->total_length));
 }
 
 void di_ident(Packet p){
@@ -313,19 +313,19 @@ void di_ident(Packet p){
 }
 
 void di_flags(Packet p){
-    printf("(0x%02x) Reserved: %d, Don't fragment: %d, More fragments: %d", p->ih->flags, p->ih->flags&0x4, p->ih->flags&0x2, p->ih->flags&0x1);
+    printf("(0x%02x) Reserved: %u, Don't fragment: %u, More fragments: %u", p->ih->flags, p->ih->flags&0x4, p->ih->flags&0x2, p->ih->flags&0x1);
 }
 
 void di_fragoff(Packet p){
-    printf("%d", p->ih->fragment_offset);
+    printf("%u", p->ih->fragment_offset);
 }
 
 void di_ttl(Packet p){
-    printf("%d", p->ih->ttl);
+    printf("%u", p->ih->ttl);
 }
 
 void di_protocol(Packet p){
-    printf("%d", p->ih->protocol);
+    printf("%u", p->ih->protocol);
 }
 
 void di_headcheck(Packet p){
@@ -335,18 +335,18 @@ void di_headcheck(Packet p){
 void di_source(Packet p){
     for(int byte = 0; byte<4; byte++){
         if(byte<3)
-            printf("%d:", p->ih->source_ip[byte]);
+            printf("%u:", p->ih->source_ip[byte]);
         else
-            printf("%d", p->ih->source_ip[byte]);
+            printf("%u", p->ih->source_ip[byte]);
     }
 }
 
 void di_dest(Packet p){
     for(int byte = 0; byte<4; byte++){
         if(byte<3)
-            printf("%d:", p->ih->destination_ip[byte]);
+            printf("%u:", p->ih->destination_ip[byte]);
         else
-            printf("%d", p->ih->destination_ip[byte]);
+            printf("%u", p->ih->destination_ip[byte]);
     }
 }
 
@@ -355,11 +355,11 @@ void di_dest(Packet p){
 //-----------------------------------------------------
 
 void dt_sport(Packet p){
-    printf("%d", ntohs(p->th->source_port));
+    printf("%u", ntohs(p->th->source_port));
 }
 
 void dt_dport(Packet p){
-    printf("%d", ntohs(p->th->destin_port));
+    printf("%u", ntohs(p->th->destin_port));
 }
 
 void dt_seq(Packet p){
@@ -371,11 +371,11 @@ void dt_ack(Packet p){
 }
 
 void dt_reserved(Packet p){ // should be zero
-    printf("%d", p->th->reserved);
+    printf("%u", p->th->reserved);
 }
 
 void dt_data_offset(Packet p){
-    printf("%d", p->th->data_offset);
+    printf("%u", p->th->data_offset);
 }
 
 void dt_flags(Packet p){
@@ -399,7 +399,9 @@ void dt_flags(Packet p){
     p->th->fin);
 }
 
-
+void dt_win_size(Packet p){
+    printf("%u", ntohs(p->th->win_size));
+}
 
 //-----------------------------------------------------
 // payload
