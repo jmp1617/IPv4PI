@@ -133,7 +133,7 @@ void byte_replace(uint8_t* bytes, uint8_t* nbytes, int ibc, int nbc, int off){
 int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
     //read in first byte containing both version and IHL
     if(!pm || !ih){
-        fprintf(stderr,"Either Packet_Meta or IPv4_Header is null\n");
+        fprintf(stderr,"Either Packet_Meta or IPv4_Header is null at loading ip header\n");
         return 0;
     }
     uint8_t temp;
@@ -182,7 +182,7 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
 
 int load_eII_header_f(Packet_Meta pm, Ethernet_Header eh){
     if(!pm || !eh){
-        fprintf(stderr,"Either Packet_Meta or Eth_Header is null\n");
+        fprintf(stderr,"Either Packet_Meta or Eth_Header is null at loading eth header\n");
         return 0;
     }
     //read in the 6 byte destination mac
@@ -196,7 +196,7 @@ int load_eII_header_f(Packet_Meta pm, Ethernet_Header eh){
 
 int load_tcp_header_f(Packet_Meta pm, TCP_Header th){
     if(!pm || !th){
-        fprintf(stderr, "Either Packet_Meta or TCP_Header is null\n");
+        fprintf(stderr, "Either Packet_Meta or TCP_Header is null at loading tcp header\n");
         return 0;
     }
     //read in source port
@@ -246,7 +246,7 @@ int load_tcp_header_f(Packet_Meta pm, TCP_Header th){
 
 int load_udp_header(Packet_Meta pm, UDP_Header uh){
     if(!pm || !uh){
-        fprintf(stderr, "Either Packet_Meta or UDP_Header is null\n");
+        fprintf(stderr, "Either Packet_Meta or UDP_Header is null at loading udp header\n");
         return 0;
     }
     fread(&uh->source_port, 2, 1, pm->packet);
@@ -431,7 +431,7 @@ int load_payload_f(Packet p, Packet_Meta pm){
     if(!p->ih)
         fprintf(stderr,"Warning; ip header is unloaded, continuing anyway.\n");
     if(!p || !pm){
-        fprintf(stderr,"Error, packet or packet meta is NULL\n");
+        fprintf(stderr,"Error, packet or packet meta is NULL at load payload\n");
         return 0;
     }
     p->payload = (uint8_t*)calloc(pm->payload_size,sizeof(uint8_t));
@@ -485,7 +485,7 @@ void display_payload_c(Packet p, Packet_Meta pm, char no_a_c){
 
 int destructor(Packet_Meta pm, Packet p){
     if(!pm || !p){
-        fprintf(stderr,"Packet meta and/or packet are Null\n");
+        fprintf(stderr,"Packet meta and/or packet are Null at destruction\n");
         return 0;
     }
     if(pm->packet)
