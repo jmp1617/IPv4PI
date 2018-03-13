@@ -255,7 +255,7 @@ int load_udp_header_f(Packet_Meta pm, UDP_Header uh){
     fread(&uh->check, 2, 1, pm->packet);
 
     //recalculate payload size
-    pm->payload_size = pm->payload_size - 8;
+    pm->payload_size = ntohs(uh->length) - 8;
 
     return 1;
 }

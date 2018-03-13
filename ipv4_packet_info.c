@@ -42,7 +42,6 @@ int main(int args, char* argv[]){
             p->uh = create_udp_header();
             load_udp_header_f(pm, p->uh);
         }
-
         if(pm->payload_size)
             load_payload_f(p, pm);
 
@@ -87,6 +86,14 @@ int main(int args, char* argv[]){
             printf("\nOption Bytes:\n\t");dt_options(p);
             printf("\n------------------------------\n\n");
         }
+        else if(p->ih->protocol == 17){
+            printf("\n------------------------------\n");
+            printf("Source Port: ");du_sport(p);
+            printf("\nDestination Port: ");du_dport(p);
+            printf("\nLength: ");du_length(p);
+            printf("\nChecksum: ");du_check(p);
+            printf("\n------------------------------\n\n");
+        }
 
         printf("\n-----------Payload------------\n");
         printf("Payload byte count: %d\n",pm->payload_size);
@@ -94,7 +101,7 @@ int main(int args, char* argv[]){
             printf("\nPayload:\n");display_payload_x(p,pm);
             printf("\nPayload (ascii representation):\n");display_payload_c(p,pm,'.');
         }
-        printf("------------------------------\n\n");
+        printf("\n------------------------------\n\n");
 
         destructor(pm, p);
     }
