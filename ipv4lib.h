@@ -315,6 +315,14 @@ void dt_urgent_point(Packet p);
 void dt_options(Packet p);
 
 //-----------------------------------------------------
+// display functions - udp
+//-----------------------------------------------------
+void du_sport(Packet p);
+void du_dport(Packet p);
+void du_length(Packet p);
+void du_check(Packet p);
+
+//-----------------------------------------------------
 // payload
 //-----------------------------------------------------
 

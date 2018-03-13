@@ -254,6 +254,9 @@ int load_udp_header_f(Packet_Meta pm, UDP_Header uh){
     fread(&uh->length, 2, 1, pm->packet);
     fread(&uh->check, 2, 1, pm->packet);
 
+    //recalculate payload size
+    pm->payload_size = pm->payload_size - 8;
+
     return 1;
 }
 
@@ -421,6 +424,25 @@ void dt_options(Packet p){
         if(byte%4==0&&byte!=osize)
             printf("\n\t");
     }
+}
+
+//-----------------------------------------------------
+// display fucntions - udp
+//-----------------------------------------------------
+void du_sport(Packet p){
+    printf("%u", ntohs(p->uh->source_port));
+}
+
+void du_dport(Packet p){
+    printf("%u", ntohs(p->uh->destin_port));
+}
+
+void du_length(Packet p){
+    printf("%u", ntohs(p->uh->length));
+}
+
+void du_check(Packet p){
+    printf("0x%04x", ntohs(p->uh->check));
 }
 
 //-----------------------------------------------------
