@@ -87,7 +87,7 @@ int main(int args, char* argv[]){
             printf("\n------------------------------\n\n");
         }
         else if(p->ih->protocol == 17){
-            printf("\n------------------------------\n");
+            printf("\n------------UDP---------------\n");
             printf("Source Port: ");du_sport(p);
             printf("\nDestination Port: ");du_dport(p);
             printf("\nLength: ");du_length(p);
