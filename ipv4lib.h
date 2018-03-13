@@ -273,7 +273,7 @@ int load_tcp_header_f(Packet_Meta pm, TCP_Header th);
 // :uh -> udp header structure
 //
 //------------------------------
-int load_udp_header_f(Packet_Meta pm, TCP_Header uh);
+int load_udp_header_f(Packet_Meta pm, UDP_Header uh);
 
 //-----------------------------------------------------
 // display functions - ethernet

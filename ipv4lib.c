@@ -244,7 +244,7 @@ int load_tcp_header_f(Packet_Meta pm, TCP_Header th){
     return 1;
 }
 
-int load_udp_header(Packet_Meta pm, UDP_Header uh){
+int load_udp_header_f(Packet_Meta pm, UDP_Header uh){
     if(!pm || !uh){
         fprintf(stderr, "Either Packet_Meta or UDP_Header is null at loading udp header\n");
         return 0;

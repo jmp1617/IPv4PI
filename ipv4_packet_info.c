@@ -38,6 +38,10 @@ int main(int args, char* argv[]){
             p->th = create_tcp_header();
             load_tcp_header_f(pm, p->th);
         }
+        else if(p->ih->protocol == 17){
+            p->uh = create_udp_header();
+            load_udp_header_f(pm, p->uh);
+        }
 
         if(pm->payload_size)
             load_payload_f(p, pm);
