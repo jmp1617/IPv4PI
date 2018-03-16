@@ -28,7 +28,8 @@ int main(int args, char* argv[]){
         // Create Packet data store
         Packet p = create_packet();
         //init packet meta
-        init_md_f(pm, argv[1], strtol(argv[2],NULL,10), strtol(argv[3],NULL,10), strtol(argv[4],NULL,10), 0, 0);
+        init_md_f(pm, argv[1], strtol(argv[2],NULL,10), \
+            strtol(argv[3],NULL,10), strtol(argv[4],NULL,10), 0, 0);
         //read in eth header if it exists
         if(pm->ethernet_flag){
             load_eII_header_f(pm, p->eh);
@@ -99,7 +100,8 @@ int main(int args, char* argv[]){
         printf("Payload byte count: %d\n",pm->payload_size);
         if(pm->payload_size>0){
             printf("\nPayload:\n");display_payload_x(p,pm);
-            printf("\nPayload (ascii representation):\n");display_payload_c(p,pm,'.');
+            printf("\nPayload (ascii representation):\n");
+            display_payload_c(p,pm,'.');
         }
         printf("\n------------------------------\n\n");
 

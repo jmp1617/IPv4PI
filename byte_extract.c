@@ -7,7 +7,8 @@
 #include <stdint.h>
 
 void print_usage(){
-    fprintf(stderr, "USAGE: byte_extract [file] [number of bytes to read in] [start index to write out] [end index to write out] [output file]\n");
+    fprintf(stderr, "USAGE: byte_extract [file] [number of bytes to read in] \
+    [start index to write out] [end index to write out] [output file]\n");
 }
 
 void extract(int rbytes, int sindex, int eindex, char* file, char* out){
@@ -24,11 +25,12 @@ void extract(int rbytes, int sindex, int eindex, char* file, char* out){
 
 int main(int argc, char* argv[]){
     if( argc != 6){
-        print_usage(); 
+        print_usage();
         return 1;
     }
     else{
-        extract( strtol(argv[2],NULL,10), strtol(argv[3],NULL,10), strtol(argv[4],NULL,10), argv[1], argv[5]);
+        extract( strtol(argv[2],NULL,10), strtol(argv[3],NULL,10), \
+            strtol(argv[4],NULL,10), argv[1], argv[5]);
     }
     return 0;
 }

@@ -37,7 +37,8 @@ IPv4_Header create_ip_header(){
 }
 
 Ethernet_Header create_eII_header(){
-    Ethernet_Header eh = (Ethernet_Header)calloc(1, sizeof(struct ethernet_header_s));
+    Ethernet_Header eh = \
+        (Ethernet_Header)calloc(1, sizeof(struct ethernet_header_s));
     if(eh){
         eh->destination = (uint8_t*)calloc(6, sizeof(uint8_t));
         eh->source = (uint8_t*)calloc(6, sizeof(uint8_t));
@@ -85,7 +86,8 @@ Packet create_packet(){
     }
 }
 
-int init_md_f(Packet_Meta pm, char* fn, int eth, int fcs, int pre, unsigned int bc, unsigned int ps){
+int init_md_f(Packet_Meta pm, char* fn, int eth, int fcs, int pre, \
+        unsigned int bc, unsigned int ps){
     if(pm){
         if(fn[0]=='0'){
             pm->packet = stdin;
@@ -133,7 +135,8 @@ void byte_replace(uint8_t* bytes, uint8_t* nbytes, int ibc, int nbc, int off){
 int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
     //read in first byte containing both version and IHL
     if(!pm || !ih){
-        fprintf(stderr,"Either Packet_Meta or IPv4_Header is null at loading ip header\n");
+        fprintf(stderr,"Either Packet_Meta or IPv4_Header is \
+        null at loading ip header\n");
         return 0;
     }
     uint8_t temp;
@@ -182,7 +185,8 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
 
 int load_eII_header_f(Packet_Meta pm, Ethernet_Header eh){
     if(!pm || !eh){
-        fprintf(stderr,"Either Packet_Meta or Eth_Header is null at loading eth header\n");
+        fprintf(stderr,"Either Packet_Meta or Eth_Header is \
+        null at loading eth header\n");
         return 0;
     }
     //read in the 6 byte destination mac
@@ -196,7 +200,8 @@ int load_eII_header_f(Packet_Meta pm, Ethernet_Header eh){
 
 int load_tcp_header_f(Packet_Meta pm, TCP_Header th){
     if(!pm || !th){
-        fprintf(stderr, "Either Packet_Meta or TCP_Header is null at loading tcp header\n");
+        fprintf(stderr, "Either Packet_Meta or TCP_Header is \
+        null at loading tcp header\n");
         return 0;
     }
     //read in source port
@@ -246,7 +251,8 @@ int load_tcp_header_f(Packet_Meta pm, TCP_Header th){
 
 int load_udp_header_f(Packet_Meta pm, UDP_Header uh){
     if(!pm || !uh){
-        fprintf(stderr, "Either Packet_Meta or UDP_Header is null at loading udp header\n");
+        fprintf(stderr, "Either Packet_Meta or UDP_Header is \
+        null at loading udp header\n");
         return 0;
     }
     fread(&uh->source_port, 2, 1, pm->packet);
@@ -319,7 +325,8 @@ void di_ident(Packet p){
 }
 
 void di_flags(Packet p){
-    printf("(0x%02x) Reserved: %u, Don't fragment: %u, More fragments: %u", p->ih->flags, p->ih->flags&0x4, p->ih->flags&0x2, p->ih->flags&0x1);
+    printf("(0x%02x) Reserved: %u, Don't fragment: %u, More fragments: %u", \
+        p->ih->flags, p->ih->flags&0x4, p->ih->flags&0x2, p->ih->flags&0x1);
 }
 
 void di_fragoff(Packet p){
@@ -453,7 +460,7 @@ int load_payload_f(Packet p, Packet_Meta pm){
     if(!p->ih)
         fprintf(stderr,"Warning; ip header is unloaded, continuing anyway.\n");
     if(!p || !pm){
-        fprintf(stderr,"Error, packet or packet meta is NULL at load payload\n");
+        fprintf(stderr,"Packet or packet meta is NULL at load payload\n");
         return 0;
     }
     p->payload = (uint8_t*)calloc(pm->payload_size,sizeof(uint8_t));

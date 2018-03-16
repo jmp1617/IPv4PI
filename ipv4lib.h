@@ -33,9 +33,9 @@
 struct packet_meta_s{
     FILE* packet;
     //flags
-    unsigned ethernet_flag: 1; // whether or not ethernet header is present or stripped
+    unsigned ethernet_flag: 1; // whether or not ethernet header is present
     unsigned fcs_active: 1; // whether or not ethernet checksum included
-    unsigned pre_del: 1; // whether or not the preamble and frame delimiter is present
+    unsigned pre_del: 1; // whether or not the preamble and frame delimiter
     //counts
     unsigned int byte_count; // number of bytes in the packet
     unsigned int payload_size;
@@ -206,7 +206,8 @@ UDP_Header create_udp_header();
 // bc-> byte count: int
 // ps-> payload size: int
 //-----------------------------------------------------
-int init_md_f(Packet_Meta pm, char* fn, int eth, int fcs, int pre, unsigned int bc, unsigned int ps);
+int init_md_f(Packet_Meta pm, char* fn, int eth, int fcs, int pre, \
+    unsigned int bc, unsigned int ps);
 
 //-----------------------------------------------------
 // Auxilary
