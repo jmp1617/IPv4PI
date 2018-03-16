@@ -170,17 +170,18 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
     fread(ih->source_ip, 1, 4, pm->packet);
     //dest ip
     fread(ih->destination_ip, 1, 4, pm->packet);
-    //calculate byte count and payload size
-    pm->payload_size = ntohs(ih->total_length) - ((ih->ihl*32)/8);
     //calculate total length
     pm->byte_count = ntohs(ih->total_length);
     if(pm->byte_count>MAX_IPV4){ // Invalid IPv4 packet
         fprintf(stderr, "WARNING: Byte count greater than the max. Truncating");
         pm->byte_count = MAX_IPV4;
+        ih->total_length = htons(pm->byte_count); // reset total_length
     }
     if(pm->byte_count<MIN_IPV4){
         fprintf(stderr, "WARNING: Byte count less than min.");
     }
+    //calculate byte count and payload size
+    pm->payload_size = ntohs(ih->total_length) - ((ih->ihl*32)/8);
     if(pm->ethernet_flag)
         pm->byte_count += 14;
     if(pm->fcs_active)
