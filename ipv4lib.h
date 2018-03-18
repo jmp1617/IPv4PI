@@ -36,6 +36,7 @@ struct packet_meta_s{
     unsigned ethernet_flag: 1; // whether or not ethernet header is present
     unsigned fcs_active: 1; // whether or not ethernet checksum included
     unsigned pre_del: 1; // whether or not the preamble and frame delimiter
+    unsigned ipv6: 1; // begin ipv6 support : flag for ipv6
     //counts
     unsigned int byte_count; // number of bytes in the packet
     unsigned int payload_size;
