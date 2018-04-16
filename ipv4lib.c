@@ -147,9 +147,9 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
     ih->version = 0xF & temp;
     //read in byte containing dscp and ecn
     fread(&temp, 1, 1, pm->packet);
-    ih->dscp = 0x3F & temp;
-    temp >>= 6;
     ih->ecn = 0x3 & temp;
+    temp >>= 2;
+    ih->dscp = 0x3F & temp;
     //read in total length
     fread(&(ih->total_length), 2, 1, pm->packet);
     //identification
