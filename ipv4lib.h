@@ -38,6 +38,7 @@ struct packet_meta_s{
     FILE* packet;
     int socket;
     uint8_t* packet_buffer;
+    int pbp; //packet buffer pointer
     //flags
     unsigned ethernet_flag: 1; // whether or not ethernet header is present
     unsigned fcs_active: 1; // whether or not ethernet checksum included

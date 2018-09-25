@@ -120,6 +120,7 @@ int init_md_s(Packet_Meta pm, int eth, int fcs, int pre, \
             return 0;
         }
         pm->packet_buffer = (uint8_t*)malloc(65536);
+        pm->pbp = 0;
         pm->ethernet_flag|=eth;
         pm->fcs_active|=fcs;
         pm->pre_del|=pre;
@@ -315,7 +316,21 @@ int load_udp_header_f(Packet_Meta pm, UDP_Header uh){
 //-----------------------------------------------------
 
 int load_eII_header_s(Packet_Meta pm, Ethernet_Header eh){
-
+    if(!pm || !eh){
+        fprintf(stderr, "Ether Packet_Meta or TCP_Header is \
+                null at loading tcp header\n");
+        return 0;
+    }
+    //copy in the 6 byte dest mac
+    memcpy(eh->destination, pm->packet_buffer+pm->pbp, 6);
+    pm->pbp+=6;
+    //copy in the source
+    memcpy(eh->source, pm->packet_buffer+pm->pbp, 6);
+    pm->pbp+=6;
+    //ethertype
+    memcpy(&(eh->ethertype),pm->packet_buffer+pm->pbp, 2);
+    pm->pbp+=2;
+    return 1;
 }
 
 //-----------------------------------------------------
