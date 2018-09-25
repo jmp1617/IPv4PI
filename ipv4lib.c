@@ -110,6 +110,27 @@ int init_md_f(Packet_Meta pm, char* fn, int eth, int fcs, int pre, \
     return 0;
 }
 
+int init_md_s(Packet_Meta pm, int eth, int fcs, int pre, \
+        unsigned int bc, unsigned int ps){
+    if(pm){
+        //create the socket
+        pm->socket = socket(AF_PACKET,SOCK_RAW,htons(ETH_P_ALL)); 
+        if(pm->socket<0){
+            fprintf(stderr,"Socket Error\n");
+            return 0;
+        }
+        pm->packet_buffer = (uint8_t*)malloc(65536);
+        pm->ethernet_flag|=eth;
+        pm->fcs_active|=fcs;
+        pm->pre_del|=pre;
+        pm->byte_count = bc;
+        pm->payload_size = ps;
+        return 1;
+    }
+    fprintf(stderr,"Packet meta struct is Null\n");
+    return 0;
+}
+
 //-----------------------------------------------------
 // Auxilary
 //-----------------------------------------------------
@@ -127,6 +148,21 @@ void byte_replace(uint8_t* bytes, uint8_t* nbytes, int ibc, int nbc, int off){
         }
     }
 }
+
+//-----------------------------------------------------
+// Socket Aux
+//-----------------------------------------------------
+int socket_to_buffer(Packet_Meta pm){
+    memset(pm->packet_buffer,0,MAX_IPV4 + 1);
+    struct sockaddr saddr;
+    int saddr_len = sizeof (saddr);
+    if(recvfrom(pm->socket,pm->packet_buffer,MAX_IPV4 + 1,0,&saddr,(socklen_t *)&saddr_len)){
+        fprintf(stderr, "Error reading from Socket\n");
+        return 0;
+    }
+    return 1;
+}
+
 
 //-----------------------------------------------------
 // Load into Memory
@@ -272,6 +308,14 @@ int load_udp_header_f(Packet_Meta pm, UDP_Header uh){
     pm->payload_size = ntohs(uh->length) - 8;
 
     return 1;
+}
+
+//-----------------------------------------------------
+// load into memory - socket
+//-----------------------------------------------------
+
+int load_eII_header_s(Packet_Meta pm, Ethernet_Header eh){
+
 }
 
 //-----------------------------------------------------
@@ -525,8 +569,10 @@ int destructor(Packet_Meta pm, Packet p){
         fprintf(stderr,"Packet meta and/or packet are Null at destruction\n");
         return 0;
     }
-    if(pm->packet)
+    if(pm->packet){
         fclose(pm->packet);
+        free(pm->packet_buffer);
+    }
     if(p->payload)
         free(p->payload);
     if(p->ih){

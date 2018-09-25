@@ -11,6 +11,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
+#include <sys/socket.h>
+#include <linux/if_packet.h>
+#include <net/ethernet.h>
+#include <string.h>
 
 //Macros
 
@@ -32,6 +36,8 @@
 //------------------------------
 struct packet_meta_s{
     FILE* packet;
+    int socket;
+    uint8_t* packet_buffer;
     //flags
     unsigned ethernet_flag: 1; // whether or not ethernet header is present
     unsigned fcs_active: 1; // whether or not ethernet checksum included
@@ -197,7 +203,7 @@ TCP_Header create_tcp_header();
 UDP_Header create_udp_header();
 
 //-----------------------------------------------------
-// set the initial packet metadata
+// set the initial packet metadata - file
 //
 // pm-> packet meta data structure: Packet_Meta
 // fn-> file name: string
@@ -208,6 +214,20 @@ UDP_Header create_udp_header();
 // ps-> payload size: int
 //-----------------------------------------------------
 int init_md_f(Packet_Meta pm, char* fn, int eth, int fcs, int pre, \
+    unsigned int bc, unsigned int ps);
+
+//-----------------------------------------------------
+// set the initial packet metadata - socket
+// opens raw socket
+//
+// pm-> packet meta data structure: Packet_Meta
+// eth-> use ethernet header: flag (int 0 or 1)
+// fcs-> frame check sum: flag (int 0 or 1)
+// pre-> preamble and sync present: flag (int 0 or 1)
+// bc-> byte count: int
+// ps-> payload size: int
+//-----------------------------------------------------
+int init_md_s(Packet_Meta pm, int eth, int fcs, int pre, \
     unsigned int bc, unsigned int ps);
 
 //-----------------------------------------------------
@@ -229,6 +249,13 @@ void print_usage(char* usage);
 //
 //------------------------------
 void byte_replace(uint8_t* bytes, uint8_t* nbytes, int ibc, int nbc, int off);
+
+
+//-----------------------------------------------------
+// Socket AUX
+//-----------------------------------------------------
+int socket_to_buffer(Packet_Meta pm);
+
 
 //-----------------------------------------------------
 // Load into memory
@@ -276,6 +303,53 @@ int load_tcp_header_f(Packet_Meta pm, TCP_Header th);
 //
 //------------------------------
 int load_udp_header_f(Packet_Meta pm, UDP_Header uh);
+
+//-----------------------------------------------------
+// Load into memory - from raw socket
+//-----------------------------------------------------
+
+//------------------------------
+//
+// read in the ipv4 header from a Socket
+//
+// :pm -> packet metadata structure
+// :ih -> ipv4 header structure
+//
+// returns success
+//------------------------------
+int load_ip_header_s(Packet_Meta pm, IPv4_Header ih);
+
+//------------------------------
+//
+// read in the ethernet header from a socket
+// does not read in crc
+//
+// :pm -> packet metadata structure
+// :eh -> ethernet 2 header structure
+//
+// return success
+//------------------------------
+int load_eII_header_s(Packet_Meta pm, Ethernet_Header eh);
+
+//------------------------------
+//
+// read in the tcp header from a socket
+//
+// :pm -> packet metadata structure
+// :th -> tcp header structrue
+//
+//------------------------------
+int load_tcp_header_s(Packet_Meta pm, TCP_Header th);
+
+//------------------------------
+//
+// read in the udp header from a socket
+//
+// :pm -> packet metadata structure
+// :uh -> udp header structure
+//
+//------------------------------
+int load_udp_header_s(Packet_Meta pm, UDP_Header uh);
 
 //-----------------------------------------------------
 // display functions - ethernet
