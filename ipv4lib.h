@@ -257,7 +257,9 @@ void byte_replace(uint8_t* bytes, uint8_t* nbytes, int ibc, int nbc, int off);
 //-----------------------------------------------------
 int socket_to_buffer(Packet_Meta pm);
 
+void reset_pbp(Packet_Meta pm);
 
+int get_pbp(Packet_Meta pm);
 //-----------------------------------------------------
 // Load into memory
 //-----------------------------------------------------
@@ -402,6 +404,16 @@ void du_check(Packet p);
 //-----------------------------------------------------
 // payload
 //-----------------------------------------------------
+
+//-----------------------------------------------------
+//
+// read in the payload bytes from socket buffer
+//
+// :p -> packet structure
+//
+// return sucess
+//-----------------------------------------------------
+int load_payload_s(Packet p, Packet_Meta pm);
 
 //-----------------------------------------------------
 //

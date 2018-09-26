@@ -1,5 +1,5 @@
 #include "ipv4lib.h"
-
+// Dumps network traffic to stdout
 int main(){
 
     Packet p;
@@ -24,8 +24,11 @@ int main(){
             p->uh = create_udp_header();
             load_udp_header_s(pm, p->uh);
         }
-        //reset the pointer since we only want eth
-        pm->pbp = 0;
+        if(pm->payload_size)
+            load_payload_s(p, pm);
+        //reset the pointer
+        reset_pbp(pm);
+
         printf("\n\n\nPacket number: %d\nTotal bytes: %d\n",counter,pm->byte_count);
 
         printf("\n--------Ethernet Header-------\n");
@@ -73,6 +76,15 @@ int main(){
             printf("\nChecksum: ");du_check(p);
             printf("\n------------------------------\n\n");
         }
+
+        printf("\n-----------Payload------------\n");
+        printf("Payload byte count: %d\n",pm->payload_size);
+        if(pm->payload_size>0){
+            printf("\nPayload:\n");display_payload_x(p,pm);
+            printf("\nPayload (ascii representation):\n");
+            display_payload_c(p,pm,'.');
+        }
+        printf("\n------------------------------\n\n");
 
         destroy_packet(p);
         counter++;

@@ -166,6 +166,13 @@ int socket_to_buffer(Packet_Meta pm){
     return 1;
 }
 
+void reset_pbp(Packet_Meta pm){
+    pm->pbp = 0;
+}
+
+int get_pbp(Packet_Meta pm){
+    return pm->pbp;
+}
 
 //-----------------------------------------------------
 // Load into Memory
@@ -672,6 +679,24 @@ int load_payload_f(Packet p, Packet_Meta pm){
         return 0;
     }
     fread(p->payload, 1, pm->payload_size, pm->packet);
+
+    return 1;
+}
+
+int load_payload_s(Packet p, Packet_Meta pm){
+    if(!p->ih)
+        fprintf(stderr,"Warning; ip header is unloaded, continuing anyway.\n");
+    if(!p || !pm){
+        fprintf(stderr,"Packet or packet meta is NULL at load payload\n");
+        return 0;
+    }
+    p->payload = (uint8_t*)calloc(pm->payload_size,sizeof(uint8_t));
+    if(!p->payload){
+        fprintf(stderr,"Calloc failed at allocating payload\n");
+        return 0;
+    }
+    memcpy(p->payload,pm->packet_buffer+pm->pbp,pm->payload_size);
+    pm->pbp+=pm->payload_size;
 
     return 1;
 }
