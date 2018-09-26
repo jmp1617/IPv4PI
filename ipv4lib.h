@@ -438,7 +438,7 @@ void display_payload_c(Packet p, Packet_Meta pm, char no_a_c);
 //-----------------------------------------------------
 // destruction
 //-----------------------------------------------------
-
+int destroy_packet(Packet p);
 //------------------------------
 //
 // deallocates all allocated memeory in packet and closes the file

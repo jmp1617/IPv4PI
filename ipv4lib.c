@@ -378,10 +378,10 @@ int load_ip_header_s(Packet_Meta pm, IPv4_Header ih){
     memcpy(&(ih->header_checksum),pm->packet_buffer+pm->pbp,2);
     pm->pbp+=2;
     //source ip
-    memcpy(&(ih->source_ip),pm->packet_buffer+pm->pbp,4);
+    memcpy(ih->source_ip,pm->packet_buffer+pm->pbp,4);
     pm->pbp+=4;
     //dest ip
-    memcpy(&(ih->destination_ip),pm->packet_buffer+pm->pbp,4);
+    memcpy(ih->destination_ip,pm->packet_buffer+pm->pbp,4);
     pm->pbp+=4;
     //calculate payload size
     pm->payload_size = ntohs(ih->total_length) - ((ih->ihl*32)/8);
@@ -633,15 +633,10 @@ void display_payload_c(Packet p, Packet_Meta pm, char no_a_c){
 //-----------------------------------------------------
 // destruction
 //-----------------------------------------------------
-
-int destructor(Packet_Meta pm, Packet p){
-    if(!pm || !p){
-        fprintf(stderr,"Packet meta and/or packet are Null at destruction\n");
+int destroy_packet(Packet p){
+    if(!p){
+        fprintf(stderr,"Packet is Null at destruction\n");
         return 0;
-    }
-    if(pm->packet){
-        fclose(pm->packet);
-        free(pm->packet_buffer);
     }
     if(p->payload)
         free(p->payload);
@@ -666,7 +661,21 @@ int destructor(Packet_Meta pm, Packet p){
     }
     if(p->uh)
         free(p->uh);
-    free(pm);
     free(p);
+    return 1;
+}
+
+
+int destructor(Packet_Meta pm, Packet p){
+    if(!pm || !p){
+        fprintf(stderr,"Packet meta and/or packet are Null at destruction\n");
+        return 0;
+    }
+    if(pm->packet){
+        fclose(pm->packet);
+        free(pm->packet_buffer);
+    }
+    destroy_packet(p);
+    free(pm);
     return 1;
 }
