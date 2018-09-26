@@ -388,6 +388,87 @@ int load_ip_header_s(Packet_Meta pm, IPv4_Header ih){
     return 1;
 }
 
+int load_tcp_header_s(Packet_Meta pm, TCP_Header th){
+    if(!pm || !th){
+        fprintf(stderr, "Either Packet_Meta or TCP_Header is \
+        null at loading tcp header\n");
+        return 0;
+    }
+    //read in source port
+    memcpy(&th->source_port, pm->packet_buffer+pm->pbp, 2);
+    pm->pbp+=2;
+    //read in dest port
+    memcpy(&th->destin_port, pm->packet_buffer+pm->pbp, 2);
+    pm->pbp+=2;
+    //read in sequence number
+    memcpy(&th->seq_num, pm->packet_buffer+pm->pbp, 4);
+    pm->pbp+=4;
+    //read in the ack number
+    memcpy(&th->ack_number, pm->packet_buffer+pm->pbp, 4);
+    pm->pbp+=4;
+    uint8_t temp;
+    memcpy(&temp, pm->packet_buffer+pm->pbp, 1);
+    pm->pbp++;
+    //ns flag
+    th->ns = 0x1 & temp;
+    temp >>= 1;
+    //reserved should be zero
+    th->reserved = 0x7 & temp;
+    temp >>= 3;
+    //data_offset
+    th->data_offset = 0xF & temp;
+    memcpy(&temp, pm->packet_buffer+pm->pbp, 1);
+    pm->pbp++;
+    //the rest of the flags
+    th->fin = 0x1 & temp;temp>>=1;
+    th->syn = 0x1 & temp;temp>>=1;
+    th->rst = 0x1 & temp;temp>>=1;
+    th->psh = 0x1 & temp;temp>>=1;
+    th->ack = 0x1 & temp;temp>>=1;
+    th->urg = 0x1 & temp;temp>>=1;
+    th->ece = 0x1 & temp;temp>>=1;
+    th->cwr = 0x1 & temp;temp>>=1;
+    //win_size
+    memcpy(&th->win_size, pm->packet_buffer+pm->pbp, 2);
+    pm->pbp+=2;
+    //checksum
+    memcpy(&th->check, pm->packet_buffer+pm->pbp, 2);
+    pm->pbp+=2;
+    //urgent pointer
+    memcpy(&th->urgent_point, pm->packet_buffer+pm->pbp, 2);
+    pm->pbp+=2;
+    //size of options
+    unsigned o_size = ((th->data_offset * 32) / 8) - 20;
+    th->options = (uint8_t*)calloc(o_size, sizeof(uint8_t));
+    memcpy(th->options, pm->packet_buffer+pm->pbp, o_size);
+    pm->pbp+=o_size;
+    //recalculate payload size
+    pm->payload_size = pm->payload_size - ((th->data_offset * 32) / 8);
+
+    return 1;
+}
+
+int load_udp_header_s(Packet_Meta pm, UDP_Header uh){
+    if(!pm || !uh){
+        fprintf(stderr, "Either Packet_Meta or UDP_Header is \
+        null at loading udp header\n");
+        return 0;
+    }
+    memcpy(&uh->source_port,pm->packet_buffer+pm->pbp,2);
+    pm->pbp+=2;
+    memcpy(&uh->destin_port,pm->packet_buffer+pm->pbp,2);
+    pm->pbp+=2;
+    memcpy(&uh->length,pm->packet_buffer+pm->pbp,2);
+    pm->pbp+=2;
+    memcpy(&uh->check,pm->packet_buffer+pm->pbp,2);
+    pm->pbp+=2;
+
+    //recalculate payload size
+    pm->payload_size = ntohs(uh->length) - 8;
+
+    return 1;
+}
+
 //-----------------------------------------------------
 // display functions - ethernet
 //-----------------------------------------------------
