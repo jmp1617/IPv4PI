@@ -114,9 +114,9 @@ int init_md_s(Packet_Meta pm, int eth, int fcs, int pre, \
         unsigned int bc, unsigned int ps){
     if(pm){
         //create the socket
-        pm->socket = socket(AF_PACKET,SOCK_RAW,htons(ETH_P_ALL)); 
+        pm->socket = socket(AF_PACKET,SOCK_RAW,htons(ETH_P_ALL));
         if(pm->socket<0){
-            fprintf(stderr,"Socket Error\n");
+            fprintf(stderr,"Socket Error\nDid you run as root?\n");
             return 0;
         }
         pm->packet_buffer = (uint8_t*)malloc(65536);
@@ -157,10 +157,12 @@ int socket_to_buffer(Packet_Meta pm){
     memset(pm->packet_buffer,0,MAX_IPV4 + 1);
     struct sockaddr saddr;
     int saddr_len = sizeof (saddr);
-    if(recvfrom(pm->socket,pm->packet_buffer,MAX_IPV4 + 1,0,&saddr,(socklen_t *)&saddr_len)){
+    int reclen = recvfrom(pm->socket,pm->packet_buffer,MAX_IPV4 + 1,0,&saddr,(socklen_t *)&saddr_len);
+    if(reclen<0){
         fprintf(stderr, "Error reading from Socket\n");
         return 0;
     }
+    pm->byte_count = reclen;
     return 1;
 }
 
