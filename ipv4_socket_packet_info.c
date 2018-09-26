@@ -7,6 +7,7 @@ int main(){
     // Create Packet metadata
     init_md_s(pm,1,0,0,0,0);
 
+    int counter = 0;
     while(1){
         // Create Packet data store
         p = create_packet();
@@ -14,10 +15,9 @@ int main(){
         socket_to_buffer(pm);
         //load ethernet header
         load_eII_header_s(pm, p->eh);
-        pm->pbp = 0; //reset the pointer since we only want eth 
-
-        printf("Total bytes: %d\n",pm->byte_count);
-
+        //reset the pointer since we only want eth
+        pm->pbp = 0;
+        printf("\n\n\nPacket number: %d\nTotal bytes: %d\n",counter,pm->byte_count);
         if(pm->ethernet_flag){
             printf("\n--------Ethernet Header-------\n");
             printf("Destination MAC: ");de_destination(p);
@@ -26,6 +26,7 @@ int main(){
             printf("\nFrame checksum: ");de_fcs(p);
             printf("\n------------------------------\n");
         }
+        counter++;
     }
 
     destructor(pm,p);

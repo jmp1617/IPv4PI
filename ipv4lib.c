@@ -319,7 +319,7 @@ int load_udp_header_f(Packet_Meta pm, UDP_Header uh){
 
 int load_eII_header_s(Packet_Meta pm, Ethernet_Header eh){
     if(!pm || !eh){
-        fprintf(stderr, "Ether Packet_Meta or TCP_Header is \
+        fprintf(stderr, "Ether Packet_Meta or Ethernet_Header is \
                 null at loading tcp header\n");
         return 0;
     }
@@ -332,6 +332,59 @@ int load_eII_header_s(Packet_Meta pm, Ethernet_Header eh){
     //ethertype
     memcpy(&(eh->ethertype),pm->packet_buffer+pm->pbp, 2);
     pm->pbp+=2;
+    return 1;
+}
+
+int load_ip_header_s(Packet_Meta pm, IPv4_Header ih){
+    if(!pm || !ih){
+        fprintf(stderr, "Ether Packet_Meta or IPv4_Header is \
+                null at loading tcp header\n");
+        return 0;
+    }
+    uint8_t temp;
+    uint16_t temp16;
+    //read in first byte containing both version and IHL
+    memcpy(&temp,pm->packet_buffer+pm->pbp,1);
+    pm->pbp++;
+    ih->ihl = 0xF & temp;
+    temp >>= 4;
+    ih->version = 0xF & temp;
+    //read in byte containing dscp and ecn
+    memcpy(&temp,pm->packet_buffer+pm->pbp,1);
+    pm->pbp++;
+    ih->ecn = 0x3 & temp;
+    temp >>= 2;
+    ih->dscp = 0x3F & temp;
+    //read in total length
+    memcpy(&(ih->total_length),pm->packet_buffer+pm->pbp,2);
+    pm->pbp+=2;
+    //identification
+    memcpy(&(ih->identification),pm->packet_buffer+pm->pbp,2);
+    pm->pbp+=2;
+    //flags and fragment offset
+    memcpy(&temp16,pm->packet_buffer+pm->pbp,2);
+    pm->pbp+=2;
+    temp16 = ntohs(temp16);
+    ih->fragment_offset = 0x1FFF & temp16;
+    temp16 >>= 13;
+    ih->flags = 0x7 & temp16;
+    //ttl byte
+    memcpy(&(ih->ttl),pm->packet_buffer+pm->pbp,1);
+    pm->pbp++;
+    //protocol
+    memcpy(&(ih->protocol),pm->packet_buffer+pm->pbp,1);
+    pm->pbp++;
+    //checksum
+    memcpy(&(ih->header_checksum),pm->packet_buffer+pm->pbp,2);
+    pm->pbp+=2;
+    //source ip
+    memcpy(&(ih->source_ip),pm->packet_buffer+pm->pbp,4);
+    pm->pbp+=4;
+    //dest ip
+    memcpy(&(ih->destination_ip),pm->packet_buffer+pm->pbp,4);
+    pm->pbp+=4;
+    //calculate payload size
+    pm->payload_size = ntohs(ih->total_length) - ((ih->ihl*32)/8);
     return 1;
 }
 
