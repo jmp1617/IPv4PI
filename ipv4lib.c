@@ -186,6 +186,56 @@ int write_to_packet_buffer(Packet_Meta pm, Packet p){
         memcpy(pm->packet_buffer+pm->pbp,ih->destination_ip,4);
         pm->pbp+=4;
     }
+    if(p->th){
+        TCP_Header th = p->th;
+        uint8_t temp;
+        memcpy(pm->packet_buffer+pm->pbp,&th->source_port,2);
+        pm->pbp+=2;
+        memcpy(pm->packet_buffer+pm->pbp,&th->destin_port,2);
+        pm->pbp+=2;
+        memcpy(pm->packet_buffer+pm->pbp,&th->seq_num,4);
+        pm->pbp+=4;
+        memcpy(pm->packet_buffer+pm->pbp,&th->ack_number,4);
+        pm->pbp+=4;
+        temp = th->data_offset;
+        temp <<= 5;
+        temp |= th->reserved;
+        temp <<= 2;
+        temp |= th->ns;
+        memcpy(pm->packet_buffer+pm->pbp,&temp,1);
+        pm->pbp++;
+        temp = th->cwr;temp<<=1;
+        temp |= th->ece;temp<<=1;
+        temp |= th->urg;temp<<=1;
+        temp |= th->ack;temp<<=1;
+        temp |= th->psh;temp<<=1;
+        temp |= th->rst;temp<<=1;
+        temp |= th->syn;temp<<=1;
+        temp |= th->fin;temp<<=1;
+        memcpy(pm->packet_buffer+pm->pbp,&temp,1);
+        pm->pbp++;
+        memcpy(pm->packet_buffer+pm->pbp,&th->win_size,2);
+        pm->pbp+=2;
+        memcpy(pm->packet_buffer+pm->pbp,&th->check,2);
+        pm->pbp+=2;
+        memcpy(pm->packet_buffer+pm->pbp,&th->urgent_point,2);
+        pm->pbp+=2;
+        unsigned o_size = ((th->data_offset * 32) / 8) - 20;
+        th->options = (uint8_t*)calloc(o_size, sizeof(uint8_t));
+        memcpy(pm->packet_buffer+pm->pbp,th->options,o_size);
+        pm->pbp+=o_size;
+    }
+    if(p->uh){
+        UDP_Header uh = p->uh;
+        memcpy(pm->packet_buffer+pm->pbp,&uh->source_port,2);
+        pm->pbp+=2;
+        memcpy(pm->packet_buffer+pm->pbp,&uh->destin_port,2);
+        pm->pbp+=2;
+        memcpy(pm->packet_buffer+pm->pbp,&uh->length,2);
+        pm->pbp+=2;
+        memcpy(pm->packet_buffer+pm->pbp,&uh->check,2);
+        pm->pbp+=2;
+    }
     return 1;
 }
 
