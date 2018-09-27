@@ -133,6 +133,63 @@ int init_md_s(Packet_Meta pm, int eth, int fcs, int pre, \
 }
 
 //-----------------------------------------------------
+// Packet Emission
+//-----------------------------------------------------
+int write_to_packet_buffer(Packet_Meta pm, Packet p){
+    if(!pm || !p){
+        fprintf(stderr,"Packet Meta or Packet is null in write_to_packet_buffer");
+        return 0;
+    }
+    memset(pm->packet_buffer,0,MAX_IPV4);
+    pm->pbp = 0;
+    if(p->eh){
+        Ethernet_Header eh = p->eh;
+        memcpy(pm->packet_buffer+pm->pbp, eh->destination, 6);
+        pm->pbp+=6;
+        memcpy(pm->packet_buffer+pm->pbp, eh->source, 6);
+        pm->pbp+=6;
+        memcpy(pm->packet_buffer+pm->pbp,&(eh->ethertype), 2);
+        pm->pbp+=2;
+    }
+    if(p->ih){
+        IPv4_Header ih = p->ih;
+        uint8_t temp;
+        uint16_t temp16;
+        temp = ih->version;
+        temp <<= 4;
+        temp |= ih->ihl;
+        memcpy(pm->packet_buffer+pm->pbp,&temp,1);
+        pm->pbp++;
+        temp = ih->dscp;
+        temp <<= 6;
+        temp |= ih->ecn;
+        memcpy(pm->packet_buffer+pm->pbp,&temp,1);
+        pm->pbp++;
+        memcpy(pm->packet_buffer+pm->pbp,&(ih->total_length),2);
+        pm->pbp+=2;
+        memcpy(pm->packet_buffer+pm->pbp,&(ih->identification),2);
+        pm->pbp+=2;
+        temp16 = ih->fragment_offset;
+        temp16 <<= 3;
+        temp16 |= ih->flags;
+        temp16 = htons(temp16);
+        memcpy(pm->packet_buffer+pm->pbp,&temp16,2);
+        pm->pbp+=2;
+        memcpy(pm->packet_buffer+pm->pbp,&(ih->ttl),1);
+        pm->pbp++;
+        memcpy(pm->packet_buffer+pm->pbp,&(ih->protocol),1);
+        pm->pbp++;
+        memcpy(pm->packet_buffer+pm->pbp,&(ih->header_checksum),2);
+        pm->pbp+=2;
+        memcpy(pm->packet_buffer+pm->pbp,ih->source_ip,4);
+        pm->pbp+=4;
+        memcpy(pm->packet_buffer+pm->pbp,ih->destination_ip,4);
+        pm->pbp+=4;
+    }
+    return 1;
+}
+
+//-----------------------------------------------------
 // Auxilary
 //-----------------------------------------------------
 

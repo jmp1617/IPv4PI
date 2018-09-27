@@ -232,6 +232,11 @@ int init_md_s(Packet_Meta pm, int eth, int fcs, int pre, \
     unsigned int bc, unsigned int ps);
 
 //-----------------------------------------------------
+// Packet Emission
+//-----------------------------------------------------
+int write_to_packet_buffer(Packet_Meta pm, Packet p);
+
+//-----------------------------------------------------
 // Auxilary
 //-----------------------------------------------------
 
@@ -260,6 +265,7 @@ int socket_to_buffer(Packet_Meta pm);
 void reset_pbp(Packet_Meta pm);
 
 int get_pbp(Packet_Meta pm);
+
 //-----------------------------------------------------
 // Load into memory
 //-----------------------------------------------------

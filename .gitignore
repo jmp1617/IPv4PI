@@ -3,6 +3,7 @@ byte_extract
 payload_inject
 packet_info
 socket_packet_info
+write_test
 
 *.gch
 
