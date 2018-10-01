@@ -236,6 +236,8 @@ int init_md_s(Packet_Meta pm, int eth, int fcs, int pre, \
 //-----------------------------------------------------
 int write_to_packet_buffer(Packet_Meta pm, Packet p);
 
+int emmit_packet(Packet_Meta pm, int port);
+
 //-----------------------------------------------------
 // Auxilary
 //-----------------------------------------------------

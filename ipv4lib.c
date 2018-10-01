@@ -236,7 +236,15 @@ int write_to_packet_buffer(Packet_Meta pm, Packet p){
         memcpy(pm->packet_buffer+pm->pbp,&uh->check,2);
         pm->pbp+=2;
     }
+    if(p->payload > 0){
+       memcpy(pm->packet_buffer+pm->pbp, p->payload, pm->payload_size);
+       pm->pbp+=pm->payload_size;
+    }
     return 1;
+}
+
+int emmit_packet(Packet_Meta pm, int port){
+
 }
 
 //-----------------------------------------------------
