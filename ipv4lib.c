@@ -236,7 +236,7 @@ int write_to_packet_buffer(Packet_Meta pm, Packet p){
         memcpy(pm->packet_buffer+pm->pbp,&uh->check,2);
         pm->pbp+=2;
     }
-    if(p->payload > 0){
+    if(pm->payload_size > 0){
        memcpy(pm->packet_buffer+pm->pbp, p->payload, pm->payload_size);
        pm->pbp+=pm->payload_size;
     }
@@ -287,6 +287,21 @@ void reset_pbp(Packet_Meta pm){
 
 int get_pbp(Packet_Meta pm){
     return pm->pbp;
+}
+
+//----------------------------------------------------
+// Checksum calculation
+//----------------------------------------------------
+
+uint16_t calc_ipv4_check(Packet_Meta pm, Packet p){
+    int count16 = sizeof(p->ih)/2;
+    uint8_t* buffer = pm->packet_buffer+(sizeof(p->eh));
+    unsigned long sum;
+    for(sum=0;count16>0;count16--)
+        sum+=htons(*(buffer)++);
+    sum = ((sum>>16)+(sum&0xFFFF));
+    sum += (sum>>16);
+    return (uint16_t)(~sum);
 }
 
 //-----------------------------------------------------
@@ -343,6 +358,7 @@ int load_ip_header_f(Packet_Meta pm, IPv4_Header ih){
     }
     //calculate byte count and payload size
     pm->payload_size = ntohs(ih->total_length) - ((ih->ihl*32)/8);
+    pm->ip_payload_count = pm->payload_size;
     if(pm->ethernet_flag)
         pm->byte_count += 14;
     if(pm->fcs_active)

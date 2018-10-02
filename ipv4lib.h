@@ -47,6 +47,7 @@ struct packet_meta_s{
     //counts
     unsigned int byte_count; // number of bytes in the packet
     unsigned int payload_size;
+    unsigned int ip_payload_count;
 };
 
 typedef struct packet_meta_s* Packet_Meta;
@@ -267,6 +268,12 @@ int socket_to_buffer(Packet_Meta pm);
 void reset_pbp(Packet_Meta pm);
 
 int get_pbp(Packet_Meta pm);
+
+//----------------------------------------------------
+// Checksum calculation
+//----------------------------------------------------
+
+uint16_t calc_ipv4_check(Packet_Meta pm, Packet p);
 
 //-----------------------------------------------------
 // Load into memory
