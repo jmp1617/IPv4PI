@@ -105,6 +105,9 @@ int main(int args, char* argv[]){
         }
         printf("\n------------------------------\n\n");
 
+        write_to_packet_buffer(pm,p);
+        printf("%X",calc_ipv4_check(pm,p));
+
         destructor(pm, p);
     }
 }

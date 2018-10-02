@@ -140,9 +140,13 @@ int write_to_packet_buffer(Packet_Meta pm, Packet p){
         fprintf(stderr,"Packet Meta or Packet is null in write_to_packet_buffer");
         return 0;
     }
+    if(!pm->packet_buffer){
+        pm->packet_buffer = (uint8_t*)calloc(MAX_IPV4,sizeof(uint8_t));
+    }
     memset(pm->packet_buffer,0,MAX_IPV4);
     pm->pbp = 0;
     if(p->eh){
+        printf("Writing EH\n");
         Ethernet_Header eh = p->eh;
         memcpy(pm->packet_buffer+pm->pbp, eh->destination, 6);
         pm->pbp+=6;
@@ -152,6 +156,7 @@ int write_to_packet_buffer(Packet_Meta pm, Packet p){
         pm->pbp+=2;
     }
     if(p->ih){
+        printf("Writing IH\n");
         IPv4_Header ih = p->ih;
         uint8_t temp;
         uint16_t temp16;
@@ -187,6 +192,7 @@ int write_to_packet_buffer(Packet_Meta pm, Packet p){
         pm->pbp+=4;
     }
     if(p->th){
+        printf("Writing TH\n");
         TCP_Header th = p->th;
         uint8_t temp;
         memcpy(pm->packet_buffer+pm->pbp,&th->source_port,2);
@@ -226,6 +232,7 @@ int write_to_packet_buffer(Packet_Meta pm, Packet p){
         pm->pbp+=o_size;
     }
     if(p->uh){
+        printf("Writing UH\n");
         UDP_Header uh = p->uh;
         memcpy(pm->packet_buffer+pm->pbp,&uh->source_port,2);
         pm->pbp+=2;
@@ -237,8 +244,9 @@ int write_to_packet_buffer(Packet_Meta pm, Packet p){
         pm->pbp+=2;
     }
     if(pm->payload_size > 0){
-       memcpy(pm->packet_buffer+pm->pbp, p->payload, pm->payload_size);
-       pm->pbp+=pm->payload_size;
+        printf("Writing Payload\n");
+        memcpy(pm->packet_buffer+pm->pbp, p->payload, pm->payload_size);
+        pm->pbp+=pm->payload_size;
     }
     return 1;
 }
@@ -294,8 +302,8 @@ int get_pbp(Packet_Meta pm){
 //----------------------------------------------------
 
 uint16_t calc_ipv4_check(Packet_Meta pm, Packet p){
-    int count16 = sizeof(p->ih)/2;
-    uint8_t* buffer = pm->packet_buffer+(sizeof(p->eh));
+    int count16 = (sizeof(p->ih)-1)/2;
+    uint8_t* buffer = pm->packet_buffer+(sizeof(p->eh)-4);
     unsigned long sum;
     for(sum=0;count16>0;count16--)
         sum+=htons(*(buffer)++);
